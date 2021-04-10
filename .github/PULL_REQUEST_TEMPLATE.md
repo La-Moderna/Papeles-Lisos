@@ -20,4 +20,3 @@ Lorem Impsum Dolor.
 
 * (Only backend) Run tests with `tox`
 * Add screenshot:
-* 
