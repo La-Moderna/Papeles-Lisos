@@ -16,7 +16,7 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ['groups', 'user_permissions']
     fieldsets = (
         ('Personal info', {'fields': (
-            'email', 'password', 'name', 'last_name', 'phone'
+            'email', 'password', 'name', 'last_name'
         )}),
         ('Important dates', {'fields': ('last_login',)}),
         ('Permissions', {'fields': (
