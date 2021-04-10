@@ -18,5 +18,5 @@ Lorem Impsum Dolor.
 * Test the functionality
 * Add screenshots:
 
-* (Only backend) Run tests with `tox`
+* Run tests with `tox`
 * Add screenshot:
