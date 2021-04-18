@@ -36,7 +36,12 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'utils',
-    'users'
+    'users',
+    'parameters',
+    'companies',
+    'clients',
+    'inventories',
+    'orders'
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
