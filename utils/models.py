@@ -30,6 +30,17 @@ class TimeStampedMixin(models.Model):
         abstract = True
 
 
+class ActiveMixin(models.Model):
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    class Meta:
+        "abstract because is common information for the models"
+
+        abstract = True
+
+
 class JsonMixin(models.Model):
     data = JSONField(null=True, blank=True)
 

@@ -92,11 +92,9 @@ class CreateUserViewSet(mixins.CreateModelMixin,
             email = data['email']
             password = data['password']
             extra_fields = {
-                'phone': data['phone'],
-                'last_name': data['last_name'],
                 'name': data['name'],
-                'is_staff': data['is_staff'],
-                'is_active': False
+                'last_name': data['last_name'],
+                'is_staff': data['is_staff']
             }
 
             user = User.objects.create_user(
