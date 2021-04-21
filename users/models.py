@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 
-from utils.models import TimeStampedMixin
+from utils.models import ActiveMixin, TimeStampedMixin
 
 
 class UserManager(BaseUserManager):
@@ -41,15 +41,8 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, ActiveMixin):
     """Custom user model to be used accross the app"""
-
-    class Meta:
-        """Define the behavior of Model."""
-
-        verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
-        ordering = ('email',)
 
     email = models.EmailField(
         max_length=254,
@@ -58,20 +51,15 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin):
     )
     name = models.CharField(
         max_length=45,
-        blank=False,
         verbose_name='nombre'
     )
     last_name = models.CharField(
         max_length=45,
-        blank=False,
         verbose_name='apellido',
         default='none'
     )
     is_staff = models.BooleanField(
         default=False
-    )
-    is_active = models.BooleanField(
-        default=True
     )
 
     USERNAME_FIELD = 'email'
@@ -86,3 +74,10 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin):
     def get_short_name(self):
         """The user is identified by their email address"""
         return self.email
+
+    class Meta:
+        """Define the behavior of Model."""
+
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
+        ordering = ('email',)

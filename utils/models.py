@@ -1,7 +1,7 @@
 """Model mixins"""
 from django.db import models
 from django.db.models import JSONField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 # Create your models here.
@@ -22,6 +22,17 @@ class TimeStampedMixin(models.Model):
         null=True,
         auto_now=True,
         verbose_name=_('last modified')
+    )
+
+    class Meta:
+        "abstract because is common information for the models"
+
+        abstract = True
+
+
+class ActiveMixin(models.Model):
+    is_active = models.BooleanField(
+        default=True
     )
 
     class Meta:

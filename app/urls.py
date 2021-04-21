@@ -15,12 +15,12 @@ Including another URLconf
 """
 from importlib import import_module
 
-from app.settings import LOCAL_APPS
-
 from django.contrib import admin
 from django.urls import include, path, re_path
 
 from utils.routers import DefaultRouter
+
+from app.settings import LOCAL_APPS
 
 router = DefaultRouter(trailing_slash=False)
 

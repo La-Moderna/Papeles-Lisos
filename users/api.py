@@ -1,6 +1,4 @@
 """User API."""
-from app.urls import router
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
@@ -12,6 +10,8 @@ from users import serializers
 
 from utils.mixins import BaseGenericViewSet
 from utils.routers import SingleObjectRouter
+
+from app.urls import router
 
 # User model
 User = get_user_model()
@@ -92,11 +92,9 @@ class CreateUserViewSet(mixins.CreateModelMixin,
             email = data['email']
             password = data['password']
             extra_fields = {
-                'phone': data['phone'],
-                'last_name': data['last_name'],
                 'name': data['name'],
-                'is_staff': data['is_staff'],
-                'is_active': False
+                'last_name': data['last_name'],
+                'is_staff': data['is_staff']
             }
 
             user = User.objects.create_user(
