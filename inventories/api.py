@@ -4,8 +4,8 @@
 
 
 from inventories import serializers
-from inventories.models import Warehouse
 from inventories.models import Inventory
+from inventories.models import Warehouse
 
 
 from rest_framework import mixins, viewsets

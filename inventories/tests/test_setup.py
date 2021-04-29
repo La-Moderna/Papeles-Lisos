@@ -15,8 +15,8 @@ class TestSetUp(APITestCase):
         self.create_inventory_url = reverse('inventories-list')
         self.create_warehouse_url = reverse('warehouses-list')
         self.get_warehouse_list_url = reverse('warehouses-list')
-        self.update_inventory_url = reverse('inventories-detail')
-        self.update_warehouse_url = reverse('warehouses-detail')
+        # self.update_inventory_url = reverse('inventories-detail')
+        # self.update_warehouse_url = reverse('warehouses-detail')
         self.inventory_data = {
             'stock': 3000.00,
             'warehouse': warehouse_dummy.id
