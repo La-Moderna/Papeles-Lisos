@@ -5,70 +5,88 @@ import csv
 from django.test import TestCase
 
 # Models
-from companies.models import Company
+from companies.models import Company, CompanyCsv
 
-class CompanyTestFunction(Test):
+
+class CompanyTestFunction(TestCase):
     def setUp(self):
-        self.createCSV = "./files/createCompanies.csv"
-        self.updateCSV = "./files/updateCompanies.csv"
-        self.createUpdateCSV = "./files/createUpdateCompanies.csv"
+        self.createCSV = "companies/tests/files/createCompanies.csv"
+        self.updateCSV = "companies/tests/files/updateCompanies.csv"
+        self.createUpdateCSV = "companies/tests/files/createUpdateCompanies.csv"
 
     def test_create_by_cv(self):
 
-        #Load File
-        with open(self.creatCompanies) as csvfile:
-            csvReader = csv.reader(csvfile, delimiter = ',')      
+        # Create Companies
+        CompanyCsv.load_csv(self.createCSV)
 
-        #Execute Function
-        Compnay.loadCSV(self.createCSV)
+        # Validate Data
+        with open(self.createCSV) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    line_count += 1
+                else:
+                    company_data = Company.objects.get(id=row[0])
+                    self.assertEqual(company_data.name, row[1])
+                    line_count += 1
 
-        #Validate Data
-        csvReader
-        line_count = 0
-        for row in spamreader:
-            if line_count == 0:
-                line_count += 1
-            else:
-                companyData = Company.objects.get(id=row[0])
-                self.assertEqual(companyData.name, row[1])
-                line_count += 1
-    
+        # Check Companies created
+        all_companies = Company.objects.all()
+        self.assertEqual(all_companies.count(), 1)
+
     def test_update_companies(self):
 
-        #Load File
-        with open(self.creatCompanies) as csvfile:
-            csvReader = csv.reader(csvfile, delimiter = ',')  
+        # Create Companies
+        CompanyCsv.load_csv(self.createCSV)
 
-        #Execute Function
-        Compnay.loadCSV(self.updateCSV)
+        # Update Companies
+        CompanyCsv.load_csv(self.updateCSV)
 
-        #Validate Data
-        csvReader
-        line_count = 0
-        for row in spamreader:
-            if line_count == 0:
-                line_count += 1
-            else:
-                companyData = Company.objects.get(id=row[0])
-                self.assertEqual(companyData.name, row[1])
-                line_count += 1
+        # Load File
+        with open(self.updateCSV) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+
+            # Validate Data
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    line_count += 1
+                else:
+                    company_data = Company.objects.get(id=row[0])
+                    self.assertEqual(company_data.name, row[1])
+                    line_count += 1
+
+        # Check Companies created
+        all_companies = Company.objects.all()
+        self.assertEqual(all_companies.count(), 1)
 
     def test_create_update_companies(self):
 
-        #Load File
-        with open(self.creatCompanies) as csvfile:
-            csvReader = csv.reader(csvfile, delimiter = ',')  
+        # Create Companies
+        CompanyCsv.load_csv(self.createCSV)
 
-        #Execute Function
-        Compnay.loadCSV(self.updateCSV)
+        # Update Companies
+        CompanyCsv.load_csv(self.updateCSV)
 
-        #Validate Data
-        csvReader
-        line_count = 0
-        for row in spamreader:
-            if line_count == 0:
-                line_count += 1
-            else:
-                companyData = Company.objects.get(id=row[0])
-                self.assertEqual(companyData.name, row[1])
-                line_count += 1
+        # Create and Update Companies
+        CompanyCsv.load_csv(self.createUpdateCSV)
+
+        # Load File
+        with open(self.createUpdateCSV) as cvs_file:
+            csv_reader = csv.reader(cvs_file, delimiter=',')
+
+            # Validate Data
+            csv_reader
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    line_count += 1
+                else:
+                    company_data = Company.objects.get(id=row[0])
+                    self.assertEqual(company_data.name, row[1])
+                    line_count += 1
+
+        # Check Companies created
+        all_companies = Company.objects.all()
+        self.assertEqual(all_companies.count(), 2)
