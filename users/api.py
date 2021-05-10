@@ -60,8 +60,9 @@ class AuthViewSet(mixins.CreateModelMixin,
         if validation_response:
             user = self.get_object(login_serializer.data['email'])
 
-            response_serializer = self.retrieve_serializer_class(
-                user
+            response_serializer = self.get_serializer(
+                user,
+                action='retrieve'
             )
 
             return Response(response_serializer.data)
@@ -83,7 +84,8 @@ class CreateUserViewSet(mixins.CreateModelMixin,
     def create(self, request, *args, **kwargs):
         """Creation of the user depending if is Staff or not"""
         create_serializer = self.get_serializer(
-            data=request.data
+            data=request.data,
+            action='create'
         )
         if create_serializer.is_valid():
             # Revisar webservice de AD
@@ -125,12 +127,12 @@ router.register(
 router.register(
     r'me',
     ProfileViewSet,
-    basename="user_me",
+    basename="me",
     router_class=SingleObjectRouter
 )
 
 router.register(
     r'users/create',
     CreateUserViewSet,
-    basename="user_create",
+    basename="user_create"
 )

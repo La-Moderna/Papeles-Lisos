@@ -84,7 +84,6 @@ class AuthResponseSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'email',
-            'is_staff',
             'token'
         ]
 

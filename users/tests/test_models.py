@@ -1,5 +1,4 @@
 """ Tests for users of the application."""
-
 from unittest import mock
 
 from django.db import transaction
@@ -85,8 +84,8 @@ class UserTestCase(TestCase):
     def test_created_date(self):
         """Test created_date field"""
         user = self.user
-        self.assertEqual(timezone.localdate(), user.created_date.date())
-        self.assertEqual(timezone.localdate(), user.last_modified.date())
+        self.assertEqual(timezone.now().date(), user.created_date.date())
+        self.assertEqual(timezone.now().date(), user.last_modified.date())
 
     def test_auto_now(self):
         """Test auto now fields."""
