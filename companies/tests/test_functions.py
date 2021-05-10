@@ -37,9 +37,6 @@ class CompanyTestFunction(TestCase):
 
     def test_update_by_cv(self):
 
-        # Create Companies
-        CompanyCsv.load_csv(self.createCSV)
-
         # Update Companies
         CompanyCsv.load_csv(self.updateCSV)
 
@@ -62,12 +59,6 @@ class CompanyTestFunction(TestCase):
         self.assertEqual(all_companies.count(), 1)
 
     def test_create_update_by_cv(self):
-
-        # Create Companies
-        CompanyCsv.load_csv(self.createCSV)
-
-        # Update Companies
-        CompanyCsv.load_csv(self.updateCSV)
 
         # Create and Update Companies
         CompanyCsv.load_csv(self.createUpdateCSV)

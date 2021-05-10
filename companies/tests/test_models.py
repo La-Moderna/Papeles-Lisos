@@ -26,6 +26,11 @@ class CompanyTestModels(TestCase):
         company = self.company
 
         with transaction.atomic():
+            company.company = None
+            with self.assertRaises(IntegrityError):
+                company.save()
+
+        with transaction.atomic():
             company.name = None
             with self.assertRaises(IntegrityError):
                 company.save()
