@@ -1,5 +1,6 @@
-from django.contrib import admin
 from companies.models import Company
+
+from django.contrib import admin
 
 # Register your models here.
 admin.site.register(Company)

@@ -1,18 +1,19 @@
 # Python
 import csv
 
-# Django
-from django.test import TestCase
-
 # Models
 from companies.models import Company, CompanyCsv
+
+# Django
+from django.test import TestCase
 
 
 class CompanyTestFunction(TestCase):
     def setUp(self):
-        self.createCSV = "companies/tests/files/createCompanies.csv"
-        self.updateCSV = "companies/tests/files/updateCompanies.csv"
-        self.createUpdateCSV = "companies/tests/files/createUpdateCompanies.csv"
+        path = "companies/tests/files/"
+        self.createCSV = path + "createCompanies.csv"
+        self.updateCSV = path + "updateCompanies.csv"
+        self.createUpdateCSV = path + "createUpdateCompanies.csv"
 
     def test_create_by_cv(self):
 

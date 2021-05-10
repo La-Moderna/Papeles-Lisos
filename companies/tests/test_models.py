@@ -1,8 +1,8 @@
-from django.db import transaction
-from django.test import TestCase
-from django.db.utils import DataError, IntegrityError
-
 from companies.models import Company
+
+from django.db import transaction
+from django.db.utils import DataError, IntegrityError
+from django.test import TestCase
 
 
 class CompanyTestModels(TestCase):

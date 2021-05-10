@@ -1,23 +1,26 @@
+# Models
+from companies.models import Company
+from companies.serializers import CompanySerializer
+
 # Django
 from django.urls import reverse
 
 # Django Rest Framework
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-# Models
-from utils.tokens import create_token
 from users.models import User
-from companies.models import Company
-from companies.serializers import CompanySerializer
 
-import json
+from utils.tokens import create_token
 
 
 class CompanyTestEndpoints(APITestCase):
     def setUp(self):
         # Create User
-        self.user = User.objects.create_user(email='a01365832@itesm.mx', password="123456789")
+        self.user = User.objects.create_user(
+            email='a01365832@itesm.mx',
+            password="123456789"
+        )
         self.token = create_token(self.user)
 
         # Create Data
@@ -49,7 +52,9 @@ class CompanyTestEndpoints(APITestCase):
         # self.client.login(email=self.user.email, password=self.user.password)
 
         # Get all companies
-        response = self.client.get(reverse('company-detail', args=[self.company_3.company]))
+        response = self.client.get(
+            reverse('company-detail', args=[self.company_3.company])
+        )
 
         # Check Correct Response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -79,5 +84,3 @@ class CompanyTestEndpoints(APITestCase):
 
         # Validate Company
         Company.objects.get(company=company_data['company'])
-
-

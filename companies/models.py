@@ -1,5 +1,6 @@
-from django.db import models
 import csv
+
+from django.db import models
 
 
 # Create your models here.
@@ -9,7 +10,11 @@ class Company(models.Model):
     is_active = models.BooleanField(default=True, null=False)
 
     def __str__(self):
-        return f"Compania: {self.company}, Nombre: {self.name}, Activo: {self.isActive}"
+        response = f"Company: {self.company}, "
+        response += f"Name: {self.name}, "
+        response += f"active: {self.isActive}"
+
+        return response
 
     class Meta:
         ordering = ['company']
