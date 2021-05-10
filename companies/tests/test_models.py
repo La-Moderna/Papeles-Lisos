@@ -10,6 +10,7 @@ class CompanyTestModels(TestCase):
 
     def setUp(self):
         self.company = Company.objects.create(
+            company=1,
             name="PELICULAS PLASTICAS SA DE CV"
         )
 
@@ -21,7 +22,7 @@ class CompanyTestModels(TestCase):
             with self.assertRaises(DataError):
                 company.save()
 
-    def text_not_nulls(self):
+    def test_not_nulls(self):
         company = self.company
 
         with transaction.atomic():
@@ -37,4 +38,4 @@ class CompanyTestModels(TestCase):
     def test_defaults(self):
         company = self.company
 
-        self.assertEqual(company.isActive, True)
+        self.assertEqual(company.is_active, True)

@@ -27,7 +27,7 @@ class CompanyTestFunction(TestCase):
                 if line_count == 0:
                     line_count += 1
                 else:
-                    company_data = Company.objects.get(id=row[0])
+                    company_data = Company.objects.get(company=row[0])
                     self.assertEqual(company_data.name, row[1])
                     line_count += 1
 
@@ -35,7 +35,7 @@ class CompanyTestFunction(TestCase):
         all_companies = Company.objects.all()
         self.assertEqual(all_companies.count(), 1)
 
-    def test_update_companies(self):
+    def test_update_by_cv(self):
 
         # Create Companies
         CompanyCsv.load_csv(self.createCSV)
@@ -53,7 +53,7 @@ class CompanyTestFunction(TestCase):
                 if line_count == 0:
                     line_count += 1
                 else:
-                    company_data = Company.objects.get(id=row[0])
+                    company_data = Company.objects.get(company=row[0])
                     self.assertEqual(company_data.name, row[1])
                     line_count += 1
 
@@ -61,7 +61,7 @@ class CompanyTestFunction(TestCase):
         all_companies = Company.objects.all()
         self.assertEqual(all_companies.count(), 1)
 
-    def test_create_update_companies(self):
+    def test_create_update_by_cv(self):
 
         # Create Companies
         CompanyCsv.load_csv(self.createCSV)
@@ -83,7 +83,7 @@ class CompanyTestFunction(TestCase):
                 if line_count == 0:
                     line_count += 1
                 else:
-                    company_data = Company.objects.get(id=row[0])
+                    company_data = Company.objects.get(company=row[0])
                     self.assertEqual(company_data.name, row[1])
                     line_count += 1
 

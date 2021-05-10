@@ -1,5 +1,7 @@
 # Create your views here.
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, viewsets, status, views
+from rest_framework.parsers import FileUploadParser
+
 from utils.mixins import BaseGenericViewSet
 from companies import serializers, models
 
@@ -17,16 +19,43 @@ class CompanyViewSet(mixins.CreateModelMixin,
 
     def list(self, request):
         queryset = self.get_queryset()
-        company_serializer = serializers.CompanySerializer(queryset, many=True)
+        company_serializer = self.get_serializer(queryset, many=True)
+
+        return Response(company_serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        company_serializer = self.get_serializer(
+            data=request.data
+        )
 
         if company_serializer.is_valid():
-            return Response(company_serializer.data)
-        return Response(company_serializer.errors)
+            data = request.data
+
+            company = data['company']
+            name = data['name']
+
+            company = models.Company.objects.create(
+                company=company,
+                name=name
+            )
+
+            company.save()
+
+            return Response(
+                company_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                company_serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def retrieve(self, request, pk=None):
         queryset = self.get_queryset()
-        user = get_object_or_404(queryset, id=pk)
-        serializer = serializers.CompanySerializer(user)
+        user = get_object_or_404(queryset, pk=pk)
+
+        serializer = self.get_serializer(user)
 
         return Response(serializer.data)
 
@@ -34,5 +63,5 @@ class CompanyViewSet(mixins.CreateModelMixin,
 router.register(
     r'companies',
     CompanyViewSet,
-    basename='company'
+    'company'
 )

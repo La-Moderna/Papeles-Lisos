@@ -4,14 +4,15 @@ import csv
 
 # Create your models here.
 class Company(models.Model):
+    company = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
-    isActive = models.BooleanField(default=True, null=False)
+    is_active = models.BooleanField(default=True, null=False)
 
     def __str__(self):
-        return f"ID: {self.id}, Nombre: {self.name}, Activo: {self.isActive}"
+        return f"Compania: {self.company}, Nombre: {self.name}, Activo: {self.isActive}"
 
     class Meta:
-        ordering = ['id']
+        ordering = ['company']
 
 
 class CompanyCsv:
@@ -31,11 +32,11 @@ class CompanyCsv:
                     line_count += 1
                 else:
                     # Verify if id exist
-                    query_companies = Company.objects.filter(id=row[0])
+                    query_companies = Company.objects.filter(company=row[0])
 
                     if query_companies.count() > 0:
                         # Get Company
-                        company = Company.objects.get(id=row[0])
+                        company = Company.objects.get(company=row[0])
 
                         # Update Company
                         company.name = row[1]
@@ -43,6 +44,6 @@ class CompanyCsv:
                     else:
                         # Create Company
                         company = Company.objects.create(
-                            id=row[0],
+                            company=row[0],
                             name=row[1]
                         )
