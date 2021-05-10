@@ -15,11 +15,11 @@ class AgentViewSet(mixins.CreateModelMixin,
     serializer_class = serializers.AgentSerializer
 
 
-class ClientBalanceViewSet(mixins.CreateModelMixin,
-                           viewsets.GenericViewSet,
-                           BaseGenericViewSet):
-    """Manage ClientsBalance."""
-    serializer_class = serializers.ClientsBalanceSerializer
+class BalanceViewSet(mixins.CreateModelMixin,
+                     viewsets.GenericViewSet,
+                     BaseGenericViewSet):
+    """Manage Balance."""
+    serializer_class = serializers.BalanceSerializer
 
 
 router.register(
@@ -29,7 +29,7 @@ router.register(
 )
 
 router.register(
-    r'clients/clientsBalance',
-    ClientBalanceViewSet,
-    basename="clientsBalance"
+    r'clients/balance',
+    BalanceViewSet,
+    basename="balance"
 )

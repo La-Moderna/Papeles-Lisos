@@ -11,8 +11,8 @@ class Agent(ActiveMixin):
         return self.headline
 
 
-class ClientsBalance(ActiveMixin):
+class Balance(ActiveMixin):
     # company = models.ForeignKey
-    client = models.CharField(max_length=40)
-    orderBalance = models.CharField(max_length=45)
-    factureBalance = models.CharField(max_length=45)
+    # client = models.ForeignKey
+    order_balance = models.CharField(max_length=45)
+    facture_balance = models.CharField(max_length=45)

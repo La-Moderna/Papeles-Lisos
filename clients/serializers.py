@@ -1,5 +1,5 @@
 from clients.models import Agent
-from clients.models import ClientsBalance
+from clients.models import Balance
 
 from rest_framework import serializers
 
@@ -9,12 +9,12 @@ class AgentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Agent
-        fields = ('__all__',)
+        fields = ('__all__')
 
 
-class ClientsBalanceSerializer(serializers.ModelSerializer):
-    """Serializer for ClientsBalance Model."""
+class BalanceSerializer(serializers.ModelSerializer):
+    """Serializer for Balance Model."""
 
     class Meta:
-        model = ClientsBalance
-        fields = ('__all__',)
+        model = Balance
+        fields = ('__all__')

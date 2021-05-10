@@ -1,5 +1,5 @@
 from clients.models import Agent
-from clients.models import ClientsBalance
+from clients.models import Balance
 
 from django.contrib import admin
 
@@ -12,16 +12,14 @@ class AgentAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(Agent, AgentAdmin)
-
-
-class ClientsBalanceAdmin(admin.ModelAdmin):
+class BalanceAdmin(admin.ModelAdmin):
     list_display = [
         'id',
-        'orderBalance',
-        'factureBalance'
+        'order_balance',
+        'facture_balance',
         'is_active',
     ]
 
 
-admin.site.register(ClientsBalance, ClientsBalanceAdmin)
+admin.site.register(Agent, AgentAdmin)
+admin.site.register(Balance, BalanceAdmin)

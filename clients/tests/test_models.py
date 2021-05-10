@@ -1,8 +1,6 @@
 """ Tests for clients of the application."""
 
-# from unittest import mock
-
-from clients.models import Agent, ClientsBalance
+from clients.models import Agent, Balance
 
 from django.db import transaction
 from django.db.utils import DataError, IntegrityError
@@ -34,28 +32,24 @@ class AgentTestCase(TestCase):
                 user.save()
 
 
-class ClientsBalanceTestCase(TestCase):
-    "Test ClientsBalance model."
+class BalanceTestCase(TestCase):
+    "Test Balance model."
     def setUp(self):
-        self.user = ClientsBalance.objects.create(
-            client="Test clientsBalance exception"
+        self.user = Balance.objects.create(
+            order_balance="Test balance exception"
         )
 
     def test_max_length(self):
         """Test max_length values."""
         user = self.user
+
         with transaction.atomic():
-            user.client = 'x'*41
+            user.order_balance = 'x'*46
             with self.assertRaises(DataError):
                 user.save()
 
         with transaction.atomic():
-            user.factureBalance = 'x'*46
-            with self.assertRaises(DataError):
-                user.save()
-
-        with transaction.atomic():
-            user.factureBalance = 'x'*46
+            user.facture_balance = 'x'*46
             with self.assertRaises(DataError):
                 user.save()
 
@@ -64,16 +58,11 @@ class ClientsBalanceTestCase(TestCase):
         user = self.user
 
         with transaction.atomic():
-            user.client = None
+            user.order_balance = None
             with self.assertRaises(IntegrityError):
                 user.save()
 
         with transaction.atomic():
-            user.orderBalance = None
-            with self.assertRaises(IntegrityError):
-                user.save()
-
-        with transaction.atomic():
-            user.factureBalance = None
+            user.facture_balance = None
             with self.assertRaises(IntegrityError):
                 user.save()
