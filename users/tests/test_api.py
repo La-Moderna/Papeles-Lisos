@@ -150,6 +150,27 @@ class MeAPITestCase(APITestCase):
 
         self.url = reverse('me-detail')
 
+    def test_valid(self):
+        """Test valid call using self.user token from /auth."""
+        client = self.client
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.token}'
+        )
+        response = client.get(self.url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertDictContainsSubset(
+            {"email": self.user.email},
+            response.data
+        )
+        self.assertEqual(
+            {'id', 'email', 'user_permissions', 'groups'},
+            set(response.data.keys())
+        )
+
     def test_invalid(self):
         """Test invalid call using incorrect token."""
         client = self.client
