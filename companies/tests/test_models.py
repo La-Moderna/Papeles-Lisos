@@ -10,7 +10,7 @@ class CompanyTestModels(TestCase):
 
     def setUp(self):
         self.company = Company.objects.create(
-            company=1,
+            id="1",
             name="PELICULAS PLASTICAS SA DE CV"
         )
 
@@ -24,11 +24,6 @@ class CompanyTestModels(TestCase):
 
     def test_not_nulls(self):
         company = self.company
-
-        with transaction.atomic():
-            company.company = None
-            with self.assertRaises(IntegrityError):
-                company.save()
 
         with transaction.atomic():
             company.name = None
