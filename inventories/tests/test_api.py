@@ -293,3 +293,8 @@ class WarehouseAPITestCase(APITestCase):
             self.create_warehouse_url,
             self.dummy_warehouse_data)
         self.assertEqual(res.status_code, 400)
+
+    def tearDown(self):
+        self.usuario.delete()
+        self.warehouse_dummy.delete()
+        self.usuario_dummy.delete()
