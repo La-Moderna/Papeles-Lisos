@@ -1,11 +1,8 @@
-# Models
 from companies.models import Company
 from companies.serializers import CompanySerializer
 
-# Django
 from django.urls import reverse
 
-# Django Rest Framework
 from rest_framework import status
 from rest_framework.test import APITestCase
 
