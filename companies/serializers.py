@@ -30,12 +30,6 @@ class RetrieveCompanySerializer(serializers.ModelSerializer):
 
 class CreateCompanySerializer(serializers.ModelSerializer):
 
-    def validate_id(self, id):
-        if id == '':
-            raise ValidationError('Id must have at least one character')
-
-        return id
-
     def validate_name(self, name):
         if len(name) < 3:
             raise ValidationError('Name must have at least Three character')
@@ -57,10 +51,6 @@ class UpdateCompanySerializer(serializers.Serializer):
     id = serializers.CharField(max_length=4)
     name = serializers.CharField(max_length=70)
 
-    def validate_id(self, id):
-        if id == '':
-            raise ValidationError('Id must have at least one character')
-
     def validate_name(self, name):
-        if len(name) <= 3:
+        if len(name) < 3:
             raise ValidationError('Name must have at least Three character')
