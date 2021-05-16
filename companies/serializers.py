@@ -62,5 +62,5 @@ class UpdateCompanySerializer(serializers.Serializer):
             raise ValidationError('Id must have at least one character')
 
     def validate_name(self, name):
-        if len(name) <= 3:
+        if len(name) < 3:
             raise ValidationError('Name must have at least Three character')
