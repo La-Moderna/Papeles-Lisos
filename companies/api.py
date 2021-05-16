@@ -16,8 +16,8 @@ from utils.mixins import (
 from app.urls import router
 
 
-class CompanyViewSet(CreateModelMixin,
-                     ListModelMixin,
+class CompanyViewSet(ListModelMixin,
+                     CreateModelMixin,
                      RetrieveModelMixin,
                      UpdateModelMixin,
                      DestroyModelMixin,
