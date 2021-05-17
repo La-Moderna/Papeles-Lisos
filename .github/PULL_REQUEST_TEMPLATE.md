@@ -17,6 +17,3 @@ Lorem Impsum Dolor.
 ### Tests
 * Test the functionality
 * Add screenshots:
-
-* Run tests with `tox`
-* Add screenshot:
