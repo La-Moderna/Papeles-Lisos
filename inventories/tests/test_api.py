@@ -14,7 +14,7 @@ from users.models import User
 
 
 class ItemsAPITestCase(APITestCase):
-    """Test /companies endpoint."""
+    """Test /items endpoint."""
     def setUp(self):
         self.user = User.objects.create(
             email='user@test.com',
