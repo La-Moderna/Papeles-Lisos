@@ -1,3 +1,18 @@
-from django.contrib import admin # noqa
+from django.contrib import admin
 
-# Register your models here.
+from inventories.models import Item
+
+
+class ItemAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'description',
+        'udVta',
+        'access_key',
+        'standar_cost',
+        'company',
+        'is_active'
+    ]
+
+
+admin.site.register(Item, ItemAdmin)
