@@ -9,7 +9,8 @@ class WarehouseAdmin(admin.ModelAdmin):
 
     list_display = [
         'id',
-        'description'
+        'description',
+        'is_active'
     ]
 
 
@@ -18,7 +19,8 @@ class InventoryAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'warehouse',
-        'stock'
+        'stock',
+        'is_active'
     ]
 
 

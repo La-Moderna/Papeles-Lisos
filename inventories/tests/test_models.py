@@ -1,5 +1,6 @@
 """ Tests for users of the application."""
 
+from companies.models import Company
 
 from django.db import transaction
 from django.db.utils import DataError, IntegrityError
@@ -12,11 +13,18 @@ from inventories.models import Warehouse
 class InventoryTestCase(TestCase):
     "Test Inventory model."
     def setUp(self):
+
+        self.company = Company.objects.create(
+            id='222',
+            name="Ejemplo 1"
+        )
         self.warehouse = Warehouse.objects.create(
-            description="Test warehouse exception"
+            description="Test warehouse exception",
+            company=self.company
         )
         self.inventory = Inventory.objects.create(
-            stock='2000', warehouse=self.warehouse
+            stock='2000',
+            warehouse=self.warehouse
         )
 
     def test_max_length(self):

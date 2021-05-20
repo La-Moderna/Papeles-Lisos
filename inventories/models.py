@@ -1,3 +1,5 @@
+from companies.models import Company
+
 from django.db import models
 
 from utils.models import ActiveMixin
@@ -10,11 +12,11 @@ class Warehouse(ActiveMixin):
 
         verbose_name = 'Almacen'
         verbose_name_plural = 'Almacenes'
-
+    warehouse_name = models.CharField(max_length=4, unique=True)
     description = models.CharField(
         max_length=100
     )
-    # company=  models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
 
 class Inventory(ActiveMixin):

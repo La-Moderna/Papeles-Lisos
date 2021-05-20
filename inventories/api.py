@@ -1,89 +1,91 @@
 
 # """User API."""
 # from django.shortcuts import get_object_or_404
-
+from django.shortcuts import get_object_or_404
 
 from inventories import serializers
 from inventories.models import Inventory
 from inventories.models import Warehouse
 
+from rest_framework import viewsets
 
-from rest_framework import mixins, viewsets
-from rest_framework.response import Response
-
-from utils.mixins import BaseGenericViewSet
+from utils.mixins import (
+    BaseGenericViewSet,
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin
+)
 
 from app.urls import router
 
 
-class WarehouseViewSet(mixins.ListModelMixin,
-                       mixins.CreateModelMixin,
-                       mixins.RetrieveModelMixin,
-                       mixins.UpdateModelMixin,
-                       mixins.DestroyModelMixin,
+class WarehouseViewSet(ListModelMixin,
+                       CreateModelMixin,
+                       RetrieveModelMixin,
+                       UpdateModelMixin,
+                       DestroyModelMixin,
                        viewsets.GenericViewSet,
                        BaseGenericViewSet):
     """Manage Creation of a Warehouse"""
 
     serializer_class = serializers.WarehouseSerializer
+    create_serializer_class = serializers.CreateWarehouseSerializer
+    list_serializer_class = serializers.WarehouseSerializer
     retrieve_serializer_class = serializers.RetrieveWarehouseSerializer
-    delete_serializer_class = serializers.DeleteWarehouseSerializer
-    # permission_classes = [IsAuthenticated]
+    update_serializer_class = serializers.CreateWarehouseSerializer
 
-    queryset = Warehouse.objects.all()
+    queryset = Warehouse.objects.filter(is_active=True)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, action='retrieve')
-        return Response(serializer.data)
+    def partial_update(self, request, *args, **kwargs):
+        old_row = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
 
-    def destroy(self, request, *args, **kwargs):
-        """Override destroy method, update status is_active to false"""
-        instance = self.get_object()
-        instance.is_active = False
-        instance.save()
-        serializer = self.get_serializer(
-            instance,
-            action='delete')
-        return Response(serializer.data)
+        new_row = super(
+            WarehouseViewSet,
+            self
+        ).partial_update(request, *args, **kwargs)
 
-    def perform_update_w(self, serializer):
-        serializer.save()
+        if 'id' in request.data:
+            id = request.data['id']
+
+            if id is not None and id != old_row.pk:
+                old_row.delete()
+
+        return new_row
 
 
-class InventoryViewSet(mixins.ListModelMixin,
-                       mixins.CreateModelMixin,
-                       mixins.RetrieveModelMixin,
-                       mixins.UpdateModelMixin,
-                       mixins.DestroyModelMixin,
+class InventoryViewSet(ListModelMixin,
+                       CreateModelMixin,
+                       RetrieveModelMixin,
+                       UpdateModelMixin,
+                       DestroyModelMixin,
                        viewsets.GenericViewSet,
                        BaseGenericViewSet):
 
     serializer_class = serializers.InventorySerializer
     retrieve_serializer_class = serializers.RetrieveInventorySerializer
-    delete_serializer_class = serializers.DeleteInventorySerializer
+    list_serializer_class = serializers.InventorySerializer
+    create_serializer_class = serializers.InventorySerializer
+    update_serializer_class = serializers.CreateInventorySerializer
 
-    queryset = Inventory.objects.all()
+    queryset = Inventory.objects.filter(is_active=True)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, action='retrieve')
-        return Response(serializer.data)
+    def partial_update(self, request, *args, **kwargs):
+        old_row = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
 
-    # forma provisional de hacerlo, no se si es la mejor opcion
-    def destroy(self, request, *args, **kwargs):
-        """Override destroy method, update status is_active to false"""
-        instance = self.get_object()
-        instance.is_active = False
-        instance.save()
-        print(instance)
-        serializer = self.get_serializer(
-            instance,
-            action='delete')
-        return Response(serializer.data)
+        new_row = super(
+            InventoryViewSet,
+            self
+        ).partial_update(request, *args, **kwargs)
 
-    def perform_update_i(self, serializer):
-        serializer.save()
+        if 'id' in request.data:
+            id = request.data['id']
+
+            if id is not None and id != old_row.pk:
+                old_row.delete()
+
+        return new_row
 
 
 router.register(
