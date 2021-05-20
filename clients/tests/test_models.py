@@ -1,6 +1,6 @@
 """ Tests for clients of the application."""
-
 from clients.models import Agent, Balance
+
 from companies.models import Company
 
 from django.db import transaction
