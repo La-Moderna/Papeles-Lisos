@@ -15,12 +15,6 @@ from users.models import User
 
 
 class InventoryAPITestCase(APITestCase):
-
-    ############################################
-    # Hacer tests de update de parametros
-    # Hacer tests de delete de parametros
-    ############################################
-
     """ Basic tests"""
     def setUp(self):
         self.url_auth = reverse('auth-list')
@@ -32,11 +26,11 @@ class InventoryAPITestCase(APITestCase):
             name="Ejemplo 1"
         )
         self.warehouse_dummy = Warehouse.objects.create(
-            warehouse_name="12c",
+            name="12c",
             description='for testing in another way',
             company=self.company_1)
         self.warehouse_dummy_3 = Warehouse.objects.create(
-            warehouse_name="43a",
+            name="43a",
             description='for testing updates',
             company=self.company_1)
         self.item_1 = Item.objects.create(
@@ -136,7 +130,7 @@ class InventoryAPITestCase(APITestCase):
             name="Ejemplo 2"
         )
         self.warehouse_dummy_2 = Warehouse.objects.create(
-            warehouse_name="tes5",
+            name="tes5",
             description='testing 1 object retrieval',
             company=self.company_2)
 
@@ -352,7 +346,7 @@ class WarehouseAPITestCase(APITestCase):
             name="Ejemplo 1"
         )
         self.warehouse_dummy = Warehouse.objects.create(
-            warehouse_name="456v",
+            name="456v",
             description='for testing in another way',
             company=self.company_1)
 
@@ -362,7 +356,7 @@ class WarehouseAPITestCase(APITestCase):
 
         self.warehouse_data = {
             'id': '2',
-            'warehouse_name': '34g',
+            'name': '34g',
             'description': 'This is for testing',
             'company': self.company_1.id
         }
@@ -449,7 +443,7 @@ class WarehouseAPITestCase(APITestCase):
         """Test retrieve warehouse without token fails"""
 
         self.warehouse_dummy_2 = Warehouse.objects.create(
-            warehouse_name="34c",
+            name="34c",
             description='testing 1 object retrieval',
             company=self.company_1)
 
@@ -464,7 +458,7 @@ class WarehouseAPITestCase(APITestCase):
         self.api_authentication()
 
         self.warehouse_dummy_2 = Warehouse.objects.create(
-            warehouse_name="32c",
+            name="32c",
             description='testing 1 object retrieval',
             company=self.company_1)
 
@@ -504,7 +498,7 @@ class WarehouseAPITestCase(APITestCase):
 
         self.dummy_warehouse_data = {
             'id': '2',
-            'warehouse_name': '45t',
+            'name': '45t',
             'description': 'x'*255
             }
 
@@ -521,7 +515,7 @@ class WarehouseAPITestCase(APITestCase):
         self.api_authentication()
 
         self.dummy_warehouse_data = {
-            'warehouse_name': '34t',
+            'name': '34t',
             'id': '2',
             'description': 'x'*255
             }
@@ -537,7 +531,7 @@ class WarehouseAPITestCase(APITestCase):
 
         self.api_authentication()
         warehouse_dummy_6 = Warehouse.objects.create(
-            warehouse_name="tes2",
+            name="tes2",
             description="This is for testing",
             company=self.company_1
         )

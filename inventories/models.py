@@ -7,16 +7,17 @@ from utils.models import ActiveMixin
 
 class Warehouse(ActiveMixin):
 
+    name = models.CharField(max_length=4, unique=True)
+    description = models.CharField(
+        max_length=100
+    )
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
     class Meta:
         """Define the behavior of the model."""
 
         verbose_name = 'Almacen'
         verbose_name_plural = 'Almacenes'
-    warehouse_name = models.CharField(max_length=4, unique=True)
-    description = models.CharField(
-        max_length=100
-    )
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
 
 class Item(ActiveMixin):
@@ -32,10 +33,7 @@ class Item(ActiveMixin):
 
 
 class Inventory(ActiveMixin):
-    class Meta:
-        """Define the behavior of the model"""
-        verbose_name = "Inventario"
-        verbose_name_plural = 'Inventarios'
+
     stock = models.DecimalField(
         max_digits=15,
         decimal_places=2,
@@ -46,3 +44,8 @@ class Inventory(ActiveMixin):
         on_delete=models.CASCADE
     )
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    class Meta:
+        """Define the behavior of the model"""
+        verbose_name = "Inventario"
+        verbose_name_plural = 'Inventarios'

@@ -1,5 +1,3 @@
-# """User API."""
-# from django.shortcuts import get_object_or_404
 from django.shortcuts import get_object_or_404
 
 from inventories import models, serializers
@@ -30,28 +28,12 @@ class WarehouseViewSet(ListModelMixin,
     """Manage Creation of a Warehouse"""
 
     serializer_class = serializers.WarehouseSerializer
-    create_serializer_class = serializers.CreateWarehouseSerializer
     list_serializer_class = serializers.WarehouseSerializer
+    create_serializer_class = serializers.CreateWarehouseSerializer
     retrieve_serializer_class = serializers.RetrieveWarehouseSerializer
     update_serializer_class = serializers.CreateWarehouseSerializer
 
     queryset = Warehouse.objects.filter(is_active=True)
-
-    def partial_update(self, request, *args, **kwargs):
-        old_row = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
-
-        new_row = super(
-            WarehouseViewSet,
-            self
-        ).partial_update(request, *args, **kwargs)
-
-        if 'id' in request.data:
-            id = request.data['id']
-
-            if id is not None and id != old_row.pk:
-                old_row.delete()
-
-        return new_row
 
 
 class InventoryViewSet(ListModelMixin,
@@ -63,28 +45,12 @@ class InventoryViewSet(ListModelMixin,
                        BaseGenericViewSet):
 
     serializer_class = serializers.InventorySerializer
-    retrieve_serializer_class = serializers.RetrieveInventorySerializer
-    list_serializer_class = serializers.InventorySerializer
+    list_serializer_class = serializers.RetrieveInventorySerializer
     create_serializer_class = serializers.InventorySerializer
+    retrieve_serializer_class = serializers.RetrieveInventorySerializer
     update_serializer_class = serializers.CreateInventorySerializer
 
     queryset = Inventory.objects.filter(is_active=True)
-
-    def partial_update(self, request, *args, **kwargs):
-        old_row = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
-
-        new_row = super(
-            InventoryViewSet,
-            self
-        ).partial_update(request, *args, **kwargs)
-
-        if 'id' in request.data:
-            id = request.data['id']
-
-            if id is not None and id != old_row.pk:
-                old_row.delete()
-
-        return new_row
 
 
 class ItemViewSet(ListModelMixin,

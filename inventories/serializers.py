@@ -26,7 +26,7 @@ class CreateWarehouseSerializer(serializers.ModelSerializer):
         model = Warehouse
         fields = [
             'id',
-            'warehouse_name',
+            'name',
             'description',
             'company'
         ]
@@ -39,7 +39,7 @@ class RetrieveWarehouseSerializer(serializers.ModelSerializer):
         model = Warehouse
         fields = [
             'id',
-            'warehouse_name',
+            'name',
             'description',
             'company'
         ]
@@ -72,9 +72,7 @@ class RetrieveItemSerializer(serializers.ModelSerializer):
         ]
 
 
-class UpdateWarehouseSerializer(serializers.Serializer):
-
-    description = serializers.CharField(max_length=100)
+class UpdateWarehouseSerializer(serializers.ModelSerializer):
 
     def validate_description(self, description):
         if len(description) < 3:
@@ -103,7 +101,6 @@ class RetrieveInventorySerializer(serializers.ModelSerializer):
 
 
 class UpdateInventorySerializer(serializers.Serializer):
-    stock = serializers.DecimalField(max_digits=15, decimal_places=2)
 
     def validate_stock(self, stock):
         if stock < 0:
