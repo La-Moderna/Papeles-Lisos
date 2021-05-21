@@ -9,7 +9,7 @@ class AgentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Agent
-        fields = ('__all__')
+        fields = ('__all__'),
 
 
 class CreateAgentSerializer(serializers.ModelSerializer):
