@@ -28,7 +28,7 @@ class WarehouseViewSet(ListModelMixin,
     """Manage Creation of a Warehouse"""
 
     serializer_class = serializers.WarehouseSerializer
-    list_serializer_class = serializers.WarehouseSerializer
+    list_serializer_class = serializers.RetrieveWarehouseSerializer
     create_serializer_class = serializers.CreateWarehouseSerializer
     retrieve_serializer_class = serializers.RetrieveWarehouseSerializer
     update_serializer_class = serializers.CreateWarehouseSerializer
@@ -46,7 +46,7 @@ class InventoryViewSet(ListModelMixin,
 
     serializer_class = serializers.InventorySerializer
     list_serializer_class = serializers.RetrieveInventorySerializer
-    create_serializer_class = serializers.InventorySerializer
+    create_serializer_class = serializers.CreateInventorySerializer
     retrieve_serializer_class = serializers.RetrieveInventorySerializer
     update_serializer_class = serializers.CreateInventorySerializer
 
