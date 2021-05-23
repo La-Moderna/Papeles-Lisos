@@ -117,7 +117,8 @@ class CreateInventorySerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'stock',
-            'warehouse'
+            'warehouse',
+            'item'
         ]
 
 
