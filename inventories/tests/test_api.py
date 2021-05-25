@@ -14,7 +14,7 @@ from users.models import User
 
 
 class InventoryAPITestCase(APITestCase):
-    """ Basic tests"""
+    """Test /inventories"""
     def setUp(self):
         self.url_auth = reverse('auth-list')
         self.usuario = User.objects.create_user("prueba3@gmail.com",
