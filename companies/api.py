@@ -2,7 +2,9 @@ from companies import models, serializers
 
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import mixins, status, viewsets
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from utils.mixins import (
     BaseGenericViewSet,
@@ -48,9 +50,33 @@ class CompanyViewSet(ListModelMixin,
 
         return new_row
 
+class LoadCompanyViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadCompanySerializer
+
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+router.register(
+    r'companies/load',
+    LoadCompanyViewSet,
+    basename="company-load"
+)
 
 router.register(
     r'companies',
     CompanyViewSet,
-    'company'
+    basename="company"
 )

@@ -2,6 +2,8 @@ from django.core.exceptions import ValidationError
 
 from inventories.models import Item
 
+from inventories.utils import load_items
+
 from rest_framework import serializers
 
 
@@ -53,3 +55,22 @@ class CreateItemSerializer(serializers.ModelSerializer):
             'standar_cost',
             'company'
         ]
+
+class LoadItemSerializer(serializers.ModelSerializer):
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Item
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_items(file, delimiter)
+
+        return validated_data

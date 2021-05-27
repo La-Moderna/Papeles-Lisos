@@ -1,3 +1,4 @@
+from clients.utils import load_agents
 from clients.models import Agent
 from clients.models import Balance
 
@@ -64,3 +65,24 @@ class RetrieveBalanceSerializer(serializers.ModelSerializer):
             'facture_balance',
             'company'
         ]
+
+
+class LoadAgentSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Agent
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_agents(file, delimiter)
+
+        return validated_data

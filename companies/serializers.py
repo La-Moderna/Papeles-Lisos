@@ -1,4 +1,5 @@
 from companies.models import Company
+from companies.utils import load_companies
 
 from django.core.exceptions import ValidationError
 
@@ -54,3 +55,24 @@ class UpdateCompanySerializer(serializers.Serializer):
     def validate_name(self, name):
         if len(name) < 3:
             raise ValidationError('Name must have at least three characters')
+
+
+class LoadCompanySerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Company
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_companies(file, delimiter)
+
+        return validated_data
