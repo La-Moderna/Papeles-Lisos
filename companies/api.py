@@ -32,21 +32,21 @@ class CompanyViewSet(ListModelMixin,
 
     queryset = models.Company.objects.filter(is_active=True)
 
-    def partial_update(self, request, *args, **kwargs):
-        old_row = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
 
-        new_row = super(
-            CompanyViewSet,
-            self
-        ).partial_update(request, *args, **kwargs)
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
 
-        if 'id' in request.data:
-            id = request.data['id']
+        assert lookup_url_kwarg in self.kwargs, (
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
 
-            if id is not None and id != old_row.pk:
-                old_row.delete()
+        filter_kwargs = {'company_id': self.kwargs[lookup_url_kwarg]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
 
-        return new_row
+        self.check_object_permissions(self.request, obj)
+
+        return obj
 
 
 router.register(

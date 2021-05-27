@@ -4,5 +4,11 @@ from utils.models import ActiveMixin
 
 
 class Company(ActiveMixin):
-    id = models.CharField(max_length=4, primary_key=True)
-    name = models.CharField(max_length=70)
+    company_id = models.CharField(
+        max_length=4,
+        unique=True
+    )
+
+    name = models.CharField(
+        max_length=70
+    )

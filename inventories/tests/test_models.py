@@ -16,7 +16,7 @@ class InventoryTestCase(TestCase):
     def setUp(self):
 
         self.company = Company.objects.create(
-            id='222',
+            company_id='222',
             name="Ejemplo 1"
         )
         self.warehouse = Warehouse.objects.create(
@@ -24,7 +24,7 @@ class InventoryTestCase(TestCase):
             company=self.company
         )
         self.item = Item.objects.create(
-            id="10015474",
+            item_id="10015474",
             description="61200005001",
             udVta="MIL",
             access_key="864",
@@ -64,6 +64,62 @@ class InventoryTestCase(TestCase):
             with self.assertRaises(IntegrityError):
                 inventory.save()
 
+    def test_on_delete_inventory_fk_warehouse(self):
+        """Test on delete constraints (DO_NOTHING)"""
+        company_test = Company.objects.create(
+            company_id='com1',
+            name='Papeles de prueba')
+        item_test = Item.objects.create(
+            item_id='asc45g',
+            description='This is for testing delete of objects',
+            udVta='cue2',
+            access_key='acess345j',
+            standar_cost=123.4345,
+            company=company_test)
+
+        warehouse_1 = Warehouse.objects.create(
+            name='tes7',
+            description='this is a test',
+            company=company_test)
+
+        inventory = Inventory.objects.create(
+            stock=3000,
+            warehouse=warehouse_1,
+            item=item_test)
+
+        warehouse_1.delete()
+        inventory_qs = Inventory.objects.filter(pk=inventory.pk)
+        self.assertEqual(inventory_qs.exists(), False)  # Este True,
+        inventory_qs.delete()
+
+    def test_on_delete_inventory_fk_item(self):
+        """Test on delete constraints (DO_NOTHING)"""
+        company_test = Company.objects.create(
+            company_id='com1',
+            name='Papeles de prueba')
+        item_test = Item.objects.create(
+            item_id='asc45g',
+            description='This is for testing delete of objects',
+            udVta='cue2',
+            access_key='acess345j',
+            standar_cost=123.4345,
+            company=company_test)
+
+        warehouse_1 = Warehouse.objects.create(
+            name='tes7',
+            description='this is a test',
+            company=company_test)
+
+        inventory = Inventory.objects.create(
+            stock=3000,
+            warehouse=warehouse_1,
+            item=item_test)
+
+        item_test.delete()
+        inventory_qs = Inventory.objects.filter(pk=inventory.pk)
+        self.assertEqual(inventory_qs.exists(), False)  # Este True,
+        inventory_qs.delete()
+
 
 class WarehouseTestCase(TestCase):
     """Test warehouse model"""
@@ -71,7 +127,7 @@ class WarehouseTestCase(TestCase):
     def setUp(self):
 
         self.company = Company.objects.create(
-            id='222',
+            company_id='222',
             name="Ejemplo 1"
         )
         self.warehouse = Warehouse.objects.create(
@@ -79,7 +135,7 @@ class WarehouseTestCase(TestCase):
             company=self.company
         )
         self.item = Item.objects.create(
-            id="10015474",
+            item_id="10015474",
             description="61200005001",
             udVta="MIL",
             access_key="864",
@@ -121,6 +177,22 @@ class WarehouseTestCase(TestCase):
             with self.assertRaises(IntegrityError):
                 warehouse.save()
 
+    def test_on_delete_warehouse_fk(self):
+        """Test on delete constraints (DO_NOTHING)"""
+        company_test = Company.objects.create(
+            company_id='com1',
+            name='Papeles de prueba')
+
+        warehouse_1 = Warehouse.objects.create(
+            name='tes7',
+            description='this is a test',
+            company=company_test)
+
+        company_test.delete()
+        warehouse_qs = Warehouse.objects.filter(pk=warehouse_1.pk)
+        self.assertEqual(warehouse_qs.exists(), False)  # Este True,
+        warehouse_qs.delete()
+
 
 class ItemTestModels(TestCase):
     """Test Item Model"""
@@ -129,12 +201,12 @@ class ItemTestModels(TestCase):
         """Create initial values"""
 
         self.company = Company.objects.create(
-            id="222",
+            company_id="222",
             name="Papeles de Toluca"
         )
 
         self.item = Item.objects.create(
-            id="10015474",
+            item_id="10015474",
             description="61200005001",
             udVta="MIL",
             access_key="864",
@@ -147,7 +219,7 @@ class ItemTestModels(TestCase):
         item = self.item
 
         with transaction.atomic():
-            item.id = 'x' * 21
+            item.item_id = 'x' * 21
             with self.assertRaises(DataError):
                 item.save()
 
@@ -178,6 +250,11 @@ class ItemTestModels(TestCase):
 
     def test_not_nulls(self):
         item = self.item
+
+        with transaction.atomic():
+            item.item_id = None
+            with self.assertRaises(IntegrityError):
+                item.save()
 
         with transaction.atomic():
             item.description = None

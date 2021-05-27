@@ -21,7 +21,7 @@ class InventoryAPITestCase(APITestCase):
                                                 "root")
 
         self.company_1 = Company.objects.create(
-            id='222',
+            company_id='222',
             name="Ejemplo 1"
         )
         self.warehouse_dummy = Warehouse.objects.create(
@@ -33,7 +33,7 @@ class InventoryAPITestCase(APITestCase):
             description='for testing updates',
             company=self.company_1)
         self.item_1 = Item.objects.create(
-            id="10011262",
+            item_id="10011262",
             description="L-3",
             udVta="MIL",
             access_key="905",
@@ -125,7 +125,7 @@ class InventoryAPITestCase(APITestCase):
         self.api_authentication()
 
         self.company_2 = Company.objects.create(
-            id='225',
+            company_id='225',
             name="Ejemplo 2"
         )
         self.warehouse_dummy_2 = Warehouse.objects.create(
@@ -341,7 +341,7 @@ class WarehouseAPITestCase(APITestCase):
         self.usuario = User.objects.create_user("prueba3@gmail.com",
                                                 "root")
         self.company_1 = Company.objects.create(
-            id='222',
+            company_id='222',
             name="Ejemplo 1"
         )
         self.warehouse_dummy = Warehouse.objects.create(
@@ -562,16 +562,19 @@ class ItemsAPITestCase(APITestCase):
         self.password = 'Tester_123'
         self.user.set_password(self.password)
         self.user.save()
+
         self.company_1 = Company.objects.create(
-            id='222',
+            company_id='222',
             name="Ejemplo 1"
         )
+
         self.company_2 = Company.objects.create(
-            id='333',
+            company_id='333',
             name="Ejemplo 2"
         )
+
         self.item_1 = Item.objects.create(
-            id="10011262",
+            item_id="10011262",
             description="L-3",
             udVta="MIL",
             access_key="905",
@@ -580,7 +583,7 @@ class ItemsAPITestCase(APITestCase):
         )
 
         self.item_2 = Item.objects.create(
-            id="10015474",
+            item_id="10015474",
             description="61200005001",
             udVta="MIL",
             access_key="864",
@@ -589,7 +592,7 @@ class ItemsAPITestCase(APITestCase):
         )
 
         self.item_3 = Item.objects.create(
-            id="10015814",
+            item_id="10015814",
             description="61500004001",
             udVta="MIL",
             access_key="864",
@@ -598,7 +601,7 @@ class ItemsAPITestCase(APITestCase):
         )
 
         self.item_4 = Item.objects.create(
-            id="10015852",
+            item_id="10015852",
             description="AMMENS 60 G",
             udVta="MIL",
             access_key="876",
@@ -634,7 +637,7 @@ class ItemsAPITestCase(APITestCase):
     def test_retrieve_item(self):
         '''Test valid retrive item with a valid id'''
         response = self.client.get(
-            reverse('item-detail', args=[self.item_1.id])
+            reverse('item-detail', args=[self.item_1.item_id])
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -646,19 +649,19 @@ class ItemsAPITestCase(APITestCase):
     def test_create_company(self):
         '''Test valid creation of item'''
         item_data = {
-            "id": "10016862",
+            "item_id": "10016862",
             "description": "CLM",
             "udVta": "MIL",
             "access_key": "13002",
             "standar_cost": 2.1444,
-            "company": self.company_2.id
+            "company": self.company_2.company_id
         }
 
         response = self.client.post(reverse('item-list'), item_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        item = Item.objects.get(id=item_data['id'])
+        item = Item.objects.get(item_id=item_data['item_id'])
         item_serializer = RetrieveItemSerializer(item)
 
         self.assertEqual(item_serializer.data, response.data)
@@ -670,13 +673,13 @@ class ItemsAPITestCase(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
 
         self.assertDictContainsSubset(item_data, response.data)
 
@@ -689,13 +692,13 @@ class ItemsAPITestCase(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
 
         self.assertDictContainsSubset(item_data, response.data)
 
@@ -708,13 +711,13 @@ class ItemsAPITestCase(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
 
         self.assertDictContainsSubset(item_data, response.data)
 
@@ -727,13 +730,13 @@ class ItemsAPITestCase(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
 
         self.assertDictContainsSubset({
             "standar_cost": "1.1111"
@@ -747,56 +750,56 @@ class ItemsAPITestCase(APITestCase):
     def test_partial_update_item_company(self):
         '''Test valid update of item company'''
         item_data = {
-            "company": self.company_2.id,
+            "company": self.company_2.company_id,
         }
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
 
         self.assertDictContainsSubset(item_data, response.data)
 
-        self.assertEqual(item.company.id, item_data['company'])
+        self.assertEqual(item.company.company_id, item_data['company'])
 
     def test_partial_update_item_id(self):
         '''Test valid update of item id'''
         item_data = {
-            "id": "30016214",
+            "item_id": "30016214",
         }
 
-        old_id = self.item_1.id
+        old_id = self.item_1.item_id
 
         response = self.client.patch(
-            reverse('item-detail', kwargs={'pk': self.item_1.id}),
+            reverse('item-detail', kwargs={'pk': self.item_1.item_id}),
             item_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(id=item_data["id"])
+        item = Item.objects.get(item_id=item_data["item_id"])
 
         self.assertDictContainsSubset(item_data, response.data)
 
-        self.assertEqual(item.id, item_data['id'])
+        self.assertEqual(item.item_id, item_data['item_id'])
 
-        item_list = Item.objects.filter(id=old_id)
+        item_list = Item.objects.filter(item_id=old_id)
 
         self.assertEqual(len(item_list), 0)
 
     def test_destroy_item(self):
         '''Test valid destroy item, updating the is_active value'''
         response = self.client.delete(
-            reverse('item-detail',  kwargs={'pk': self.item_1.id})
+            reverse('item-detail',  kwargs={'pk': self.item_1.item_id})
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        item = Item.objects.get(pk=self.item_1.id)
+        item = Item.objects.get(item_id=self.item_1.item_id)
         self.assertEqual(item.is_active, False)
 
     def test_list_item_no_authentication(self):
@@ -875,7 +878,7 @@ class ItemsAPITestCase(APITestCase):
 
         self.assertDictContainsSubset(
             {
-                "id": [
+                "item_id": [
                     "This field is required."
                 ],
                 "description": [
@@ -914,8 +917,8 @@ class ItemsAPITestCase(APITestCase):
 
         self.assertDictContainsSubset(
             {
-                "id": [
-                    "This field may not be blank."
+                "item_id": [
+                    "This field is required."
                 ],
                 "description": [
                     "This field may not be blank."
@@ -939,7 +942,7 @@ class ItemsAPITestCase(APITestCase):
     def test_create_item_invalid_company(self):
         '''Test no valid create request with a non-existent company'''
         item_data = {
-            "id": "13215474",
+            "item_id": "13215474",
             "description": "61200005001",
             "udVta": "MIL",
             "access_key": "864",
@@ -954,7 +957,7 @@ class ItemsAPITestCase(APITestCase):
         self.assertDictContainsSubset(
             {
                 "company": [
-                    'Invalid pk "000" - object does not exist.'
+                    'Object with company_id=000 does not exist.'
                 ]
             },
             response.data
@@ -963,7 +966,7 @@ class ItemsAPITestCase(APITestCase):
     def test_create_item_invalid_id(self):
         '''Test no valid create request with an existing id'''
         item_data = {
-            "id": self.item_4.id,
+            "item_id": self.item_4.item_id,
             "description": "61200005001",
             "udVta": "MIL",
             "access_key": "864",
@@ -977,8 +980,8 @@ class ItemsAPITestCase(APITestCase):
 
         self.assertDictContainsSubset(
             {
-                "id": [
-                    'item with this id already exists.'
+                "item_id": [
+                    'item with this item id already exists.'
                 ]
             },
             response.data

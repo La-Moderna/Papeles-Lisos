@@ -10,12 +10,17 @@ class CompanyTestModels(TestCase):
 
     def setUp(self):
         self.company = Company.objects.create(
-            id="1",
-            name="PELICULAS PLASTICAS SA DE CV"
+            company_id='',
+            name=''
         )
 
     def test_max_length(self):
         company = self.company
+
+        with transaction.atomic():
+            company.company_id = 'x' * 5
+            with self.assertRaises(DataError):
+                company.save()
 
         with transaction.atomic():
             company.name = 'x' * 101
@@ -24,6 +29,11 @@ class CompanyTestModels(TestCase):
 
     def test_not_nulls(self):
         company = self.company
+
+        with transaction.atomic():
+            company.company_id = None
+            with self.assertRaises(IntegrityError):
+                company.save()
 
         with transaction.atomic():
             company.name = None
