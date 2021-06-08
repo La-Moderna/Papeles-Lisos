@@ -78,6 +78,4 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, ActiveMixin):
     class Meta:
         """Define the behavior of Model."""
 
-        verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
         ordering = ('email',)

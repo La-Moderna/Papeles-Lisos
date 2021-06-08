@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = ')%&f9-7d!&9^chcxrcit76s1-6qx)_)+dkvcot7^*oe)pa(1w2'
 
-DEBUG = str(os.environ.get('DEBUG', 'False')).lower() == 'true'
+DEBUG = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,7 +31,8 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_jwt',
-    'corsheaders'
+    'corsheaders',
+    'bulk_update_or_create'
 ]
 
 LOCAL_APPS = [
@@ -140,3 +141,12 @@ CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
 # ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+#Celery configurations
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'rpc://guest:guest@localhost:5672//'
+CELERY_APP = 'app'
+CELERY_CACHE_BACKEND = 'default'
+CELERY_TASK_TRACK_STARTED = True
+task_annotations = {'tasks.add': {'rate_limit': '10/s'}}

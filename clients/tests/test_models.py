@@ -13,7 +13,7 @@ class AgentTestCase(TestCase):
 
     def setUp(self):
         self.company = Company.objects.create(
-            id='619',
+            company_id='619',
             name="Ejemplo1"
         )
         self.user = Agent.objects.create(
@@ -86,7 +86,6 @@ class BalanceTestCase(TestCase):
     def test_not_nulls(self):
         """Test not_null fields."""
         user = self.user
-        company = self.company
 
         with transaction.atomic():
             user.order_balance = None
@@ -99,7 +98,6 @@ class BalanceTestCase(TestCase):
                 user.save()
 
         with transaction.atomic():
-            company.id = None
-            company.save()
+            user.company = None
             with self.assertRaises(IntegrityError):
                 user.save()

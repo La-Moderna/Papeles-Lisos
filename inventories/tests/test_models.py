@@ -14,12 +14,12 @@ class ItemTestModels(TestCase):
         """Create initial values"""
 
         self.company = Company.objects.create(
-            id="222",
+            company_id="222",
             name="Papeles de Toluca"
         )
 
         self.item = Item.objects.create(
-            id="10015474",
+            item_id="10015474",
             description="61200005001",
             udVta="MIL",
             access_key="864",
@@ -32,7 +32,7 @@ class ItemTestModels(TestCase):
         item = self.item
 
         with transaction.atomic():
-            item.id = 'x' * 21
+            item.item_id = 'x' * 21
             with self.assertRaises(DataError):
                 item.save()
 
@@ -63,6 +63,11 @@ class ItemTestModels(TestCase):
 
     def test_not_nulls(self):
         item = self.item
+
+        with transaction.atomic():
+            item.item_id = None
+            with self.assertRaises(IntegrityError):
+                item.save()
 
         with transaction.atomic():
             item.description = None
