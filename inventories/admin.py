@@ -1,9 +1,7 @@
 from django.contrib import admin
 
 
-from inventories.models import Inventory
-from inventories.models import Item
-from inventories.models import Warehouse
+from inventories.models import Inventory, Item, Warehouse
 
 
 class WarehouseAdmin(admin.ModelAdmin):

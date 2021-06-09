@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from orders import models
+from orders.models import (
+    Authorization,
+    DeliverAddress,
+    DeliveredQuantity,
+    Invoice,
+    Order,
+    OrderDetail,
+    SalesOrder
+)
 
 
 class AuthorizationAdmin(admin.ModelAdmin):
@@ -22,7 +30,44 @@ class OrderDetailAdmin(admin.ModelAdmin):
                     'precio', 'item']
 
 
-admin.site.register(models.Authorization, AuthorizationAdmin)
-admin.site.register(models.Order, OrderAdmin)
-admin.site.register(models.SalesOrder, SalesOrderAdmin)
-admin.site.register(models.OrderDetail, OrderDetailAdmin)
+class DeliverAddressAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'company',
+        'client',
+        'del_address',
+        'is_active'
+    ]
+
+
+class DeliveredQuantityAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'company',
+        'order',
+        'reg_type',
+        'quantity',
+        'item',
+        'is_active'
+    ]
+
+
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'company',
+        'invoice_number',
+        'item',
+        'invoice_date',
+        'client',
+        'is_active'
+    ]
+
+
+admin.site.register(Authorization, AuthorizationAdmin)
+admin.site.register(DeliverAddress, DeliverAddressAdmin)
+admin.site.register(DeliveredQuantity, DeliveredQuantityAdmin)
+admin.site.register(Invoice, InvoiceAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(SalesOrder, SalesOrderAdmin)
+admin.site.register(OrderDetail, OrderDetailAdmin)

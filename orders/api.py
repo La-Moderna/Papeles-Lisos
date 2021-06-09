@@ -2,13 +2,23 @@ from django.shortcuts import get_object_or_404
 
 from inventories.models import Item
 
-from orders import models, serializers
+from orders import serializers
+from orders.models import (
+    Authorization,
+    DeliverAddress,
+    DeliveredQuantity,
+    Invoice,
+    Order,
+    OrderDetail,
+    SalesOrder
+)
 
 from rest_framework import response, status, viewsets
 
 from utils.mixins import (
     BaseGenericViewSet,
     CreateModelMixin,
+    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin
@@ -24,7 +34,7 @@ class OrderViewset(ListModelMixin,
                    BaseGenericViewSet):
 
     serializer_class = serializers.OrderSerializer
-    queryset = models.Order.objects.all()
+    queryset = Order.objects.all()
     create_serializer_class = serializers.CreateOrderSerializer
     list_serializer_class = serializers.OrderSerializer
     update_serializer_class = serializers.CreateOrderSerializer
@@ -56,14 +66,14 @@ class OrderViewset(ListModelMixin,
         )
 
         if order_serializer.is_valid():
-            order = models.Order.objects.create()
+            order = Order.objects.create()
             order.ordenCompra = order.id
             order.obsOrder = order_serializer.data['obsOrder']
             order.fechaOrden = order_serializer.data['fechaOrden']
             order.fechaSolicitada = order_serializer.data['fechaSolicitada']
             order.save()
 
-            sales_order = models.SalesOrder.objects.create(
+            sales_order = SalesOrder.objects.create(
                 status="inProgress",
                 order=order
             )
@@ -73,7 +83,7 @@ class OrderViewset(ListModelMixin,
             cantidad = order_detail_serializer.data['cantidad']
             price = cantidad * item_order.standar_cost
 
-            order_detail = models.OrderDetail.objects.create(
+            order_detail = OrderDetail.objects.create(
                 cantidad=cantidad,
                 udvta=item_order.udVta,
                 item=item_order,
@@ -83,7 +93,7 @@ class OrderViewset(ListModelMixin,
 
             order_detail.save()
 
-            authorization = models.Authorization.objects.create(
+            authorization = Authorization.objects.create(
                 order=order
             )
 
@@ -112,7 +122,7 @@ class OrderDetailViewset(RetrieveModelMixin,
     retrieve_serializer_class = serializers.OrderDetailSerializer
     update_serializer_class = serializers.UpdateOrderDetailSerializer
 
-    queryset = models.OrderDetail.objects.all()
+    queryset = OrderDetail.objects.all()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -138,7 +148,7 @@ class AreaStatusViewset(RetrieveModelMixin,
     retrieve_serializer_class = serializers.AuthorizationSerializer
 
     # Missing filter with Orders that has salesOrder or inProgress
-    queryset = models.Authorization.objects.all()
+    queryset = Authorization.objects.all()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -162,6 +172,92 @@ class AreaStatusViewset(RetrieveModelMixin,
         return super(AreaStatusViewset, self).list(request, *args, **kwargs)
 
 
+class DeliveredQuantityViewset(ListModelMixin,
+                               CreateModelMixin,
+                               RetrieveModelMixin,
+                               UpdateModelMixin,
+                               DestroyModelMixin,
+                               viewsets.GenericViewSet,
+                               BaseGenericViewSet):
+    "Manage Price Lists"
+
+    serializer_class = serializers.DeliveredQuantitySerializer
+    list_serializer_class = serializers.CustomDeliveredQuantitySerializer
+    create_serializer_class = serializers.CustomDeliveredQuantitySerializer
+    retrieve_serializer_class = serializers.CustomDeliveredQuantitySerializer
+    update_serializer_class = serializers.CustomDeliveredQuantitySerializer
+
+    queryset = DeliveredQuantity.objects.filter(is_active=True)
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in self.kwargs, (
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
+
+        filter_kwargs = {'order': self.kwargs[lookup_url_kwarg]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
+
+class InvoiceViewset(ListModelMixin,
+                     CreateModelMixin,
+                     RetrieveModelMixin,
+                     UpdateModelMixin,
+                     DestroyModelMixin,
+                     viewsets.GenericViewSet,
+                     BaseGenericViewSet):
+    "Manage Price Lists"
+
+    serializer_class = serializers.InvoiceSerializer
+    list_serializer_class = serializers.CustomInvoiceSerializer
+    create_serializer_class = serializers.CustomInvoiceSerializer
+    retrieve_serializer_class = serializers.CustomInvoiceSerializer
+    update_serializer_class = serializers.CustomInvoiceSerializer
+
+    queryset = Invoice.objects.filter(is_active=True)
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in self.kwargs, (
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
+
+        filter_kwargs = {'invoice_number': self.kwargs[lookup_url_kwarg]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
+
+class DeliverAddressViewset(ListModelMixin,
+                            CreateModelMixin,
+                            RetrieveModelMixin,
+                            UpdateModelMixin,
+                            DestroyModelMixin,
+                            viewsets.GenericViewSet,
+                            BaseGenericViewSet):
+    "Manage Price Lists"
+
+    serializer_class = serializers.DeliverAddressSerializer
+    list_serializer_class = serializers.RetrieveDeliverAddressSerializer
+    create_serializer_class = serializers.CustomDeliverAddressSerializer
+    retrieve_serializer_class = serializers.RetrieveDeliverAddressSerializer
+    update_serializer_class = serializers.CustomDeliverAddressSerializer
+
+    queryset = DeliverAddress.objects.filter(is_active=True)
+
+
 router.register(
     r'order',
     OrderViewset,
@@ -180,4 +276,16 @@ router.register(
     r'order/status',
     AreaStatusViewset,
     'auth-order'
+)
+
+router.register(
+    r'delivered-quantities',
+    DeliveredQuantityViewset,
+    basename='delivered-quantity'
+)
+
+router.register(
+    r'deliver-addresses',
+    DeliverAddressViewset,
+    basename='deliver-address'
 )
