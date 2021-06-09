@@ -95,8 +95,6 @@ class LoadItemViewSet(mixins.CreateModelMixin,
 
     create_serializer_class = serializers.LoadItemSerializer
 
-    permission_classes = [AllowAny]
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, action='create')
         serializer.is_valid(raise_exception=True)
@@ -107,10 +105,57 @@ class LoadItemViewSet(mixins.CreateModelMixin,
             status=status.HTTP_201_CREATED
         )
 
+
+class LoadWarehouseViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadWarehouseSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class LoadInventoryViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadInventorySerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
 router.register(
     r'items/load',
     LoadItemViewSet,
     basename='load-items'
+)
+router.register(
+    r'warehouses/load',
+    LoadWarehouseViewSet,
+    basename="load-warehouses",
+)
+router.register(
+    r'inventories/load',
+    LoadInventoryViewSet,
+    basename="load-inventories",
 )
 router.register(
     r'inventories',

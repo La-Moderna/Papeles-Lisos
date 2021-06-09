@@ -53,7 +53,6 @@ class CreateCompanySerializer(serializers.ModelSerializer):
             'company_id',
             'name'
         ]
-<<<<<<< HEAD
 
 
 class UpdateCompanySerializer(serializers.Serializer):
@@ -64,7 +63,6 @@ class UpdateCompanySerializer(serializers.Serializer):
     def validate_name(self, name):
         if len(name) < 3:
             raise ValidationError('Name must have at least three characters')
-
 
 class LoadCompanySerializer(serializers.ModelSerializer):
 
@@ -85,5 +83,3 @@ class LoadCompanySerializer(serializers.ModelSerializer):
         load_companies(file, delimiter)
 
         return validated_data
-=======
->>>>>>> d5f064d085e43a11b8f92c9861f286de624d0baa

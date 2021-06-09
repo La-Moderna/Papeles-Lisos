@@ -10,14 +10,15 @@ class WarehouseAdmin(admin.ModelAdmin):
 
     list_display = [
         'id',
-        'description',
+        'name'
     ]
 
 
 class ItemAdmin(admin.ModelAdmin):
-    search_fields = ['id']
+    search_fields = ['item_id']
     list_display = [
         'id',
+        'item_id',
         'description',
         'udVta',
         'access_key',
@@ -28,10 +29,11 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 class InventoryAdmin(admin.ModelAdmin):
-
+    search_fields = ['item__item_id']
     list_display = [
         'id',
         'warehouse',
+        'item',
         'stock',
         'is_active'
     ]

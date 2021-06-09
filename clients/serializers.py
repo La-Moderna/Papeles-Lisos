@@ -1,6 +1,10 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from clients.utils import load_agents
-from clients.models import Agent
-from clients.models import Balance
+from django.utils.encoding import smart_text
+
+from clients.models import Agent, Balance
+from companies.models import Company
 
 from rest_framework import serializers
 
@@ -13,8 +17,28 @@ class AgentSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class CompanySlugRelatedField(serializers.SlugRelatedField):
+
+    def to_internal_value(self, data):
+        try:
+            print(data)
+            return self.get_queryset().get(**{self.slug_field: data})
+        except ObjectDoesNotExist:
+            self.fail(
+                'does_not_exist',
+                slug_name=self.slug_field,
+                value=smart_text(data)
+            )
+        except (TypeError, ValueError):
+            self.fail('invalid')
+
+
 class CreateAgentSerializer(serializers.ModelSerializer):
     """Serializer for Agent Model."""
+    company = CompanySlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.all()
+    )
 
     class Meta:
         model = Agent
@@ -26,6 +50,11 @@ class CreateAgentSerializer(serializers.ModelSerializer):
 
 class RetrieveAgentSerializer(serializers.ModelSerializer):
     """Serializer for Agent Model."""
+
+    company = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='company_id'
+    )
 
     class Meta:
         model = Agent

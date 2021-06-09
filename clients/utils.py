@@ -50,7 +50,7 @@ def load_agents(csv_file, delimiter):
         try:
             agents.append(
                 Agent(
-                    company = Company.objects.get(id=extra_columns['company']),
+                    company = Company.objects.get(company_id=extra_columns['company']),
                     representant=extra_columns.get('representant')
                 )
             )

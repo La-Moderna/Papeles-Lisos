@@ -33,7 +33,7 @@ def load_companies(csv_file, delimiter):
     # Change columns names
     main_dataframe.rename(
         columns={
-            'Compania': 'id',
+            'Compania': 'company_id',
             'Nombre': 'name'
         },
         inplace=True
@@ -49,7 +49,7 @@ def load_companies(csv_file, delimiter):
         try:
             companies.append(
                 Company(
-                    id=extra_columns.get('id'),
+                    company_id=extra_columns.get('company_id'),
                     name=extra_columns.get('name')
                 )
             )
@@ -57,7 +57,7 @@ def load_companies(csv_file, delimiter):
             continue
     
     if Company.objects.exists():
-        Company.objects.bulk_update_or_create(companies, ['name'], match_field='id')
+        Company.objects.bulk_update_or_create(companies, ['name'], match_field='company_id')
     else:
         Company.objects.bulk_create(companies)
 

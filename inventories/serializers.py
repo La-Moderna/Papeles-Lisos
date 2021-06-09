@@ -1,3 +1,4 @@
+from rest_framework.response import Response
 from companies.models import Company
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -7,9 +8,9 @@ from inventories.models import Inventory
 from inventories.models import Item
 from inventories.models import Warehouse
 
-from inventories.utils import load_items
+from inventories.utils import load_inventories, load_items, load_warehouses
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 
 class WarehouseSerializer(serializers.ModelSerializer):
@@ -50,6 +51,26 @@ class RetrieveWarehouseSerializer(serializers.ModelSerializer):
         ]
 
 
+class LoadWarehouseSerializer(serializers.ModelSerializer):
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Warehouse
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_warehouses(file, delimiter)
+
+        return validated_data
+
+
 class InventorySerializer(serializers.ModelSerializer):
     """Serializer for Inventory"""
 
@@ -61,12 +82,23 @@ class InventorySerializer(serializers.ModelSerializer):
 class RetrieveInventorySerializer(serializers.ModelSerializer):
     """"Serializer to retrieve inventory"""
 
+    warehouse = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name'
+    )
+
+    item = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='item_id'
+    )
+
     stock = serializers.DecimalField(max_digits=15, decimal_places=2)
 
     class Meta:
         model = Inventory
         fields = [
-            'id',
+            'warehouse',
+            'item',
             'stock'
         ]
 
@@ -84,6 +116,26 @@ class CreateInventorySerializer(serializers.ModelSerializer):
             'warehouse',
             'item'
         ]
+
+
+class LoadInventorySerializer(serializers.ModelSerializer):
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Inventory
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_inventories(file, delimiter)
+        
+        return validated_data
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -112,7 +164,7 @@ class RetrieveItemSerializer(serializers.ModelSerializer):
             'description',
             'udVta',
             'access_key',
-            'standar_cost',
+            'standard_cost',
             'company'
         ]
 

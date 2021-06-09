@@ -8,6 +8,7 @@ from bulk_update_or_create import BulkUpdateOrCreateQuerySet
 
 
 class Warehouse(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
 
     name = models.CharField(max_length=4, unique=True)
     description = models.CharField(
@@ -15,22 +16,15 @@ class Warehouse(ActiveMixin):
     )
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
-    class Meta:
-        """Define the behavior of the model."""
-
-        verbose_name = 'Almacen'
-        verbose_name_plural = 'Almacenes'
+    def __str__(self):
+        """Return the representation in string"""
+        return self.name
 
 
 class Item(ActiveMixin):
-<<<<<<< HEAD
-
     objects = BulkUpdateOrCreateQuerySet.as_manager()
-
-    id = models.CharField(max_length=20, primary_key=True)
-=======
+    
     item_id = models.CharField(max_length=20, unique=True)
->>>>>>> d5f064d085e43a11b8f92c9861f286de624d0baa
     description = models.CharField(max_length=70)
     udVta = models.CharField(max_length=4)
     access_key = models.CharField(max_length=20)
@@ -39,9 +33,13 @@ class Item(ActiveMixin):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     # Miss M:N table with Inventory
     # Miss M:N table with OrderDetails
+    def __str__(self):
+        """Return the representation in string"""
+        return str(self.item_id) if self.item_id else ''
 
 
 class Inventory(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
 
     stock = models.DecimalField(
         max_digits=15,
@@ -56,5 +54,5 @@ class Inventory(ActiveMixin):
 
     class Meta:
         """Define the behavior of the model"""
-        verbose_name = "Inventario"
-        verbose_name_plural = 'Inventarios'
+        verbose_name = "Inventory"
+        verbose_name_plural = 'Inventories'
