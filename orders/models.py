@@ -30,7 +30,7 @@ class DeliveredQuantity(ActiveMixin):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name='clients'
+        verbose_name='delivered_quantities'
     )
     order = models.BigIntegerField(unique=True)
     position = models.IntegerField()
