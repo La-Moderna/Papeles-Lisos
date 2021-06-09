@@ -116,7 +116,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserProfileCustomSerializer(serializers.ModelSerializer):
     """Profile serializer."""
-
+    # due to custom permissions usage, the next line has to be commented
     # user_permissions = UserPermissionSerializer(many=True)
     roles = UserRoleSerializer(many=True)
 
