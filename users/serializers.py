@@ -45,8 +45,7 @@ class RetrievePermissionSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         try:
-            permiso = Permission.objects.get(id=data.get('id'))
-            print(permiso)
+            Permission.objects.get(id=data.get('id'))
         except Permission.DoesNotExist:
             raise serializers.ValidationError("permission does not exist")
         return data

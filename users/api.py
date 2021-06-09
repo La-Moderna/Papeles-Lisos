@@ -236,7 +236,7 @@ router.register(
 )
 
 router.register(
-    r'users/roles',
+    r'roles',
     CreateRoleViewset,
     basename="role"
 )
@@ -248,7 +248,7 @@ router.register(
 )
 
 router.register(
-    r'users/permissions',
+    r'permissions',
     CreatePermissionViewset,
     basename='permission'
 )
