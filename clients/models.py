@@ -59,7 +59,7 @@ class Client(ActiveMixin):
     STATUS_CHOICES = [
         (1, "Cliente Normal"),
         (2, "Cliente Dudoso"),
-        (3, "Cliene Bloqueado"),
+        (3, "Cliente Bloqueado"),
         (4, "Cliente Potencia")
     ]
     company = models.ForeignKey(
