@@ -29,7 +29,6 @@ class Item(ActiveMixin):
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     # Miss M:N table with Inventory
-    # Miss M:N table with OrderDetails
 
 
 class Inventory(ActiveMixin):
