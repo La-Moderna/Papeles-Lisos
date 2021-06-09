@@ -45,14 +45,14 @@ class RetrievePermissionSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         try:
-            Permission.objects.get(id=data.get('id'))
-        except Permission.DoesNotExist:
+            CustomPermission.objects.get(id=data.get('id'))
+        except CustomPermission.DoesNotExist:
             raise serializers.ValidationError("permission does not exist")
         return data
 
     class Meta:
         """Define behavior"""
-        model = Permission
+        model = CustomPermission
         fields = [
             'id',
             'codename',

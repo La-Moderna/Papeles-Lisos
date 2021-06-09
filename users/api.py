@@ -248,7 +248,7 @@ router.register(
 )
 
 router.register(
-    r'permissions',
+    r'custom-permissions',
     CreatePermissionViewset,
     basename='permission'
 )
