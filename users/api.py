@@ -133,29 +133,8 @@ class AddRoleUserViewSet(CreateModelMixin,
                          BaseGenericViewSet):
     serializer_class = serializers.RetrieveRoleNameSerializer
     create_serializer_class = serializers.RetrieveRoleNameSerializer
-    update_serializer_class = serializers.RetrieveRoleNameSerializer
+    update_serializer_class = serializers.RetrieveUserRoleSerializer
     queryset = User.objects.filter(is_active=True)
-
-    def partial_update(self, request, *args, **kwargs):
-        pk = kwargs.get('pk')
-        print(pk)
-        user = get_object_or_404(self.get_queryset(), pk=int(kwargs['pk']))
-        if (user):
-
-            data = request.data['roles']
-            for role in data:
-                role_1 = get_object_or_404(Role, pk=int(role['id']))
-                if(role_1):
-                    user.roles.add(role_1)
-                else:
-                    return Response('Role does not exist')
-            user.save()
-
-            return Response(data)
-        return Response(
-            "Hubo un error",
-            status=status.HTTP_400_BAD_REQUEST
-            )
 
 
 class CreatePermissionViewset(CreateModelMixin,

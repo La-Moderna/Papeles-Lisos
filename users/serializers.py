@@ -1,10 +1,14 @@
 """Serializer for user API."""
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import Group, Permission
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.encoding import smart_text
 
 from rest_framework import serializers
 
 from users.models import Permission as CustomPermission, Role, User
+
 
 from utils.tokens import create_token
 
@@ -29,6 +33,21 @@ class GroupPermissionSerializer(serializers.ModelSerializer):
 
         model = Group
         fields = '__all__'
+
+
+class SlugRelatedField(serializers.SlugRelatedField):
+
+    def to_internal_value(self, data):
+        try:
+            return self.get_queryset().get(**{self.slug_field: data})
+        except ObjectDoesNotExist:
+            self.fail(
+                'does_not_exist',
+                slug_name=self.slug_field,
+                value=smart_text(data)
+            )
+        except (TypeError, ValueError):
+            self.fail('invalid')
 
 
 class UserPermissionCustomSerializer(serializers.ModelSerializer):
@@ -110,6 +129,20 @@ class RetrieveRoleNameSerializer(serializers.ModelSerializer):
         model = Role
         fields = ['id',
                   'name']
+
+
+class RetrieveUserRoleSerializer(serializers.ModelSerializer):
+    """Serializer for listing and retrieving roles"""
+    roles = SlugRelatedField(
+        slug_field='id',
+        many=True,
+        queryset=Role.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = User
+        fields = ['id',
+                  'roles']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

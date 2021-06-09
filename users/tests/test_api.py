@@ -360,28 +360,26 @@ class RoleUserAPITestCase(APITestCase):
         self.role_3 = Role.objects.create(name="VYUT")
 
         self.roles_array = [
-                {"id": self.role_1.id},
-                {"id": self.role_2.id},
-                {"id": self.role_3.id}
+                self.role_1.id,
+                self.role_2.id,
+                self.role_3.id
             ]
 
         self.roles_data = {
             'roles': [
-                {"id": self.role_1.id},
-                {"id": self.role_2.id},
-                {"id": self.role_3.id}
+               self.role_1.id,
+               self.role_2.id,
+               self.role_3.id
             ]
         }
         self.roles_data_dummy = {
             'roles': [
-                {"id": 34}
+                34
             ]
         }
 
         self.get_roles_list_url = reverse('role-list')
         self.get_permissions_list_url = reverse('permission-list')
-        # self.add_role_url = reverse('user_role_add-detail')
-        # self.add_permission_url = reverse('permission-detail')
 
     def api_authentication(self):
         res = self.client.post(self.url_auth,
@@ -418,7 +416,7 @@ class RoleUserAPITestCase(APITestCase):
                                 json.dumps(self.roles_data_dummy),
                                 content_type='application/json')
 
-        self.assertEquals(res.status_code, 404)
+        self.assertEquals(res.status_code, 400)
 
     def test_add_role_user_successfully(self):
         """Test succeeds to add roles to an existing user"""
