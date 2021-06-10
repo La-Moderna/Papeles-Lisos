@@ -146,8 +146,8 @@ class CreatePermissionViewset(CreateModelMixin,
                               BaseGenericViewSet):
     """Manage creation of permission"""
 
-    serializer_class = serializers.UserPermissionSerializer
-    create_serializer_class = serializers.UserPermissionSerializer
+    serializer_class = serializers.UserPermissionCustomSerializer
+    create_serializer_class = serializers.UserPermissionCustomSerializer
     list_serializer_class = serializers.RetrievePermissionSerializer
     retrieve_serializer_class = serializers.RetrievePermissionSerializer
     update_serializer_class = serializers.UserPermissionSerializer

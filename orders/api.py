@@ -157,10 +157,11 @@ class OrderDetailViewset(RetrieveModelMixin,
 
 
 class AreaStatusViewset(mixins.RetrieveModelMixin,
+                        UpdateModelMixin,
                         viewsets.GenericViewSet,
                         BaseGenericViewSet):
     serializer_class = serializers.AuthorizationSerializer
-
+    update_serializer_class = serializers.AuthorizationSerializer
     # Missing filter with Orders that has salesOrder or inProgress
     queryset = Authorization.objects.all()
 
@@ -284,7 +285,7 @@ router.register(
 router.register(
     r'order-status',
     AreaStatusViewset,
-    'auth-order'
+    basename='auth-order'
 )
 
 router.register(
