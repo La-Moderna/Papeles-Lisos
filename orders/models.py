@@ -89,12 +89,12 @@ class DeliverAddress(ActiveMixin):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name='deliver_addresses'
+        related_name='deliver_addresses'
     )
     client = models.ForeignKey(
         Client,
         on_delete=models.DO_NOTHING,
-        verbose_name='deliver_addresses'
+        related_name='deliver_addresses'
     )
     del_address = models.CharField(max_length=4)
     nameA = models.CharField(max_length=50, null=True, blank=True)

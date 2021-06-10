@@ -15,6 +15,7 @@ class AgentAdmin(admin.ModelAdmin):
 class BalanceAdmin(admin.ModelAdmin):
     list_display = [
         'id',
+        'client',
         'order_balance',
         'facture_balance',
         'company',

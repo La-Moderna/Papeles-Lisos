@@ -1,3 +1,4 @@
+from django.db.models.deletion import DO_NOTHING
 from companies.models import Company
 
 from django.db import models
@@ -15,29 +16,24 @@ class Agent(ActiveMixin):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
 
-class Balance(ActiveMixin):
-    # client = models.ForeignKey
-    order_balance = models.CharField(max_length=45)
-    facture_balance = models.CharField(max_length=45)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-
-
 class PriceList(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     DISCOUNT_LEVEL_CHOICES = [
         (1, 1),
         (2, 2)
     ]
 
-    price_list_id = models.CharField(max_length=10, unique=True)
+    price_list_id = models.CharField(max_length=10)
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name='price_lists'
+        related_name='price_lists'
     )
     item = models.ForeignKey(
         Item,
         on_delete=models.DO_NOTHING,
-        verbose_name='price_lists'
+        related_name='price_lists'
     )
     discount_level = models.IntegerField(
         choices=DISCOUNT_LEVEL_CHOICES
@@ -59,6 +55,8 @@ class PriceList(ActiveMixin):
 
 
 class Client(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     STATUS_CHOICES = [
         (1, "Cliente Normal"),
         (2, "Cliente Dudoso"),
@@ -68,7 +66,7 @@ class Client(ActiveMixin):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name='clients'
+        related_name='clients'
     )
     client_id = models.CharField(max_length=10, unique=True)
     nameA = models.CharField(max_length=50)
@@ -77,19 +75,19 @@ class Client(ActiveMixin):
     agent = models.ForeignKey(
         Agent,
         on_delete=models.DO_NOTHING,
-        verbose_name='clients'
+        related_name='clients'
     )
     analist = models.CharField(max_length=10)
     currency = models.CharField(max_length=3)
     credit_lim = models.BigIntegerField()
     price_lists = models.ManyToManyField(
         PriceList,
-        verbose_name='clients'
+        related_name='clients'
     )
     warehouse = models.ForeignKey(
         Warehouse,
         on_delete=models.DO_NOTHING,
-        verbose_name='clients'
+        related_name='clients'
     )
 
     def __str__(self):
@@ -100,3 +98,13 @@ class Client(ActiveMixin):
 
         verbose_name = 'Cliente'
         verbose_name_plural = 'Clientes'
+
+
+class Balance(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+    
+    # client = models.ForeignKey(Client, on_delete=models.DO_NOTHING)
+    client = models.CharField(max_length=10, default=0)
+    order_balance = models.CharField(max_length=45)
+    facture_balance = models.CharField(max_length=45)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)

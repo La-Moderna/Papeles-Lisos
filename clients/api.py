@@ -131,7 +131,59 @@ class LoadAgentViewSet(mixins.CreateModelMixin,
 
     create_serializer_class = serializers.LoadAgentSerializer
 
-    permission_classes = [AllowAny]
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class LoadPriceListViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadPriceListSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class LoadClientViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadClientSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class LoadBalanceViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadBalanceSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, action='create')
@@ -148,6 +200,24 @@ router.register(
     r'agents/load',
     LoadAgentViewSet,
     basename="agents-load"
+)
+
+router.register(
+    r'clients/load',
+    LoadClientViewSet,
+    basename="clients-load"
+)
+
+router.register(
+    r'price-lists/load',
+    LoadPriceListViewSet,
+    basename="price-lists-load"
+)
+
+router.register(
+    r'balance/load',
+    LoadBalanceViewSet,
+    basename="balance-load"
 )
 
 router.register(

@@ -7,7 +7,7 @@ from django.utils.encoding import smart_text
 
 from inventories.models import Item
 
-from clients.utils import load_agents
+from clients.utils import load_agents, load_balances, load_clients, load_priceList
 
 from rest_framework import serializers
 
@@ -99,6 +99,28 @@ class RetrieveBalanceSerializer(serializers.ModelSerializer):
         ]
 
 
+class LoadBalanceSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Balance
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_balances(file, delimiter)
+
+        return validated_data
+
+
+
 class LoadAgentSerializer(serializers.ModelSerializer):
 
     file = serializers.FileField()
@@ -172,6 +194,27 @@ class CustomClientSerializer(serializers.ModelSerializer):
         ]
 
 
+class LoadClientSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Client
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_clients(file, delimiter)
+
+        return validated_data
+
+
 class PriceListSerializer(serializers.ModelSerializer):
     """Serializer for PriceList Model."""
 
@@ -212,3 +255,24 @@ class CustomPriceListSerializer(serializers.ModelSerializer):
             'start_date',
             'end_date'
         ]
+
+
+class LoadPriceListSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = PriceList
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_priceList(file, delimiter)
+
+        return validated_data
