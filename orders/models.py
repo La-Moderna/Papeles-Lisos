@@ -9,6 +9,55 @@ from inventories.models import Item
 from utils.models import ActiveMixin
 
 
+class Order(ActiveMixin):
+    obsOrder = models.CharField(max_length=100)
+    ordenCompra = models.IntegerField(null=True)
+    fechaOrden = models.CharField(max_length=10)
+    fechaSolicitada = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.ordenCompra
+
+    class Meta:
+        """Define the behavior of the model."""
+
+        verbose_name = 'Orden'
+        verbose_name_plural = 'Listas de Ordenes'
+
+
+class SalesOrder(ActiveMixin):
+    status = models.CharField(max_length=15)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.order
+
+    class Meta:
+        """Define the behavior of the model."""
+
+        verbose_name = 'Venta'
+        verbose_name_plural = 'Listas de Ventas'
+
+
+class OrderDetail(ActiveMixin):
+    cantidad = models.IntegerField()
+    udvta = models.CharField(max_length=4)
+    precio = models.DecimalField(decimal_places=2, max_digits=10)
+    posicion = models.CharField(max_length=15)
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.order
+
+    class Meta:
+        """Define the behavior of the model."""
+
+        verbose_name = 'Detalle de Orden'
+        verbose_name_plural = 'Listas de Detalles de Ordenes'
+
+
 class Authorization (ActiveMixin):
     vta = models.BooleanField(default=False)
     cst = models.BooleanField(default=False)
@@ -18,7 +67,16 @@ class Authorization (ActiveMixin):
     ing = models.BooleanField(default=False)
     cxc = models.BooleanField(default=False)
 
-    # Missing FK "Orders"
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, default=None)
+
+    def __str__(self):
+        return self.order
+
+    class Meta:
+        """Define the behavior of the model."""
+
+        verbose_name = 'Authorizaciones'
+        verbose_name_plural = 'Listas de Authorizaciones'
 
 
 class DeliveredQuantity(ActiveMixin):

@@ -6,7 +6,7 @@ from django.db.utils import DataError, IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-from users.models import User
+from users.models import Permission, Role, User
 
 
 class UserTestCase(TestCase):
@@ -105,3 +105,64 @@ class UserTestCase(TestCase):
         self.assertEqual(user.is_staff, False)
         self.assertEqual(user.is_superuser, False)
         self.assertEqual(user.is_active, True)
+
+
+class RoleTestCase(TestCase):
+    "Test Role model."
+    def setUp(self):
+        self.role = Role.objects.create(
+            name="TEST"
+        )
+
+    def test_max_length(self):
+        """Test max_length values."""
+        role = self.role
+        with transaction.atomic():
+            role.name = 'x'*255
+            with self.assertRaises(DataError):
+                role.save()
+
+    def test_not_nulls(self):
+        """Test not_null fields."""
+        role = self.role
+
+        with transaction.atomic():
+            role.name = None
+            with self.assertRaises(IntegrityError):
+                role.save()
+
+
+class PermissionTestCase(TestCase):
+    "Test Permission model."
+    def setUp(self):
+        self.permission = Permission.objects.create(
+            codename="TEST",
+            description="This is a test"
+        )
+
+    def test_max_length(self):
+        """Test max_length values."""
+        permission = self.permission
+        with transaction.atomic():
+            permission.codename = 'x'*255
+            with self.assertRaises(DataError):
+                permission.save()
+
+        with transaction.atomic():
+            permission.description = 'x'*255
+            with self.assertRaises(DataError):
+                permission.save()
+
+    def test_not_nulls(self):
+        """Test not_null fields."""
+        permission = self.permission
+
+        with transaction.atomic():
+            permission.codename = None
+            with self.assertRaises(IntegrityError):
+                permission.save()
+
+        with transaction.atomic():
+            permission.description = None
+            with self.assertRaises(IntegrityError):
+                permission.save()

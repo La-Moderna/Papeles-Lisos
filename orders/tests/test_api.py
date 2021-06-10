@@ -1,9 +1,7 @@
 from django.urls import reverse
 
 from orders.models import Authorization
-from orders.serializers import AuthorizationSerializer
 
-from rest_framework import status
 from rest_framework.test import APITestCase
 
 from users.models import User
@@ -42,13 +40,3 @@ class AuthorizationAPITestCase(APITestCase):
             suaje=True
         )
         self.auth3 = Authorization.objects.create()
-
-    def test_list_authorization(self):
-        '''Test valid list of items'''
-        response = self.client.get(reverse('auth-order-list'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        auth = Authorization.objects.all()
-        auth_serializer = AuthorizationSerializer(auth, many=True)
-
-        self.assertEqual(auth_serializer.data, response.data)

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 
-from users.models import User
+from users.models import Permission, Role, User
 
 
 class CustomUserAdmin(UserAdmin):
@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
 
     list_filter = ['is_staff', 'is_superuser', 'is_active', 'groups']
     search_fields = ['email']
-    filter_horizontal = ['groups', 'user_permissions']
+    filter_horizontal = ['groups', 'user_permissions', 'roles']
     fieldsets = (
         ('Personal info', {'fields': (
             'email', 'password', 'name', 'last_name'
@@ -23,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
             'is_active',
             'is_staff',
             'is_superuser',
-            'groups', 'user_permissions')
+            'groups', 'user_permissions', 'roles')
         }),
     )
 
@@ -34,9 +34,28 @@ class CustomUserAdmin(UserAdmin):
             'is_active',
             'is_staff',
             'is_superuser',
-            'groups', 'user_permissions')
+            'groups', 'user_permissions', 'roles')
         }),
     )
 
 
+class RoleAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'name'
+    ]
+    filter_horizontal = ['permissions']
+
+
+class PermissionAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'codename',
+        'description'
+    ]
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Role, RoleAdmin)
+admin.site.register(Permission, PermissionAdmin)

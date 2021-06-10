@@ -1,14 +1,19 @@
 from django.shortcuts import get_object_or_404
 
+from inventories.models import Item
+
 from orders import serializers
 from orders.models import (
     Authorization,
     DeliverAddress,
     DeliveredQuantity,
-    Invoice
+    Invoice,
+    Order,
+    OrderDetail,
+    SalesOrder
 )
 
-from rest_framework import viewsets
+from rest_framework import mixins, response, status, viewsets
 
 from utils.mixins import (
     BaseGenericViewSet,
@@ -22,19 +27,158 @@ from utils.mixins import (
 from app.urls import router
 
 
-class AreaStatusViewset(ListModelMixin,
+class OrderViewset(ListModelMixin,
+                   CreateModelMixin,
+                   UpdateModelMixin,
+                   viewsets.GenericViewSet,
+                   BaseGenericViewSet):
+
+    serializer_class = serializers.OrderSerializer
+    list_serializer_class = serializers.OrderSerializer
+    create_serializer_class = serializers.CreateOrderSerializer
+    update_serializer_class = serializers.CreateOrderSerializer
+
+    queryset = Order.objects.all()
+
+    def create(self, request, *args, **kwargs):
+
+        try:
+            item_order = Item.objects.get(item_id=request.data['item_id'])
+        except Item.DoesNotExist:
+            return response.Response(
+                data={
+                    "item_id": "Item Id Not Found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        order_detail_serializer = serializers.CreateOrderDetailSerializer(
+            data=request.data
+        )
+
+        order_detail_serializer.is_valid(raise_exception=True)
+
+        order_serializer = self.get_serializer(
+            data=request.data,
+            action='create'
+        )
+
+        order_serializer.is_valid(raise_exception=True)
+
+        try:
+            order = Order.objects.create(
+                obsOrder=order_serializer.data['obsOrder'],
+                fechaOrden=order_serializer.data['fechaOrden'],
+                fechaSolicitada=order_serializer.data['fechaSolicitada']
+            )
+
+            order.ordenCompra = order.id
+            order.save()
+
+            sales_order = SalesOrder.objects.create(
+                status="inProgress",
+                order=order
+            )
+
+            sales_order.save()
+
+            cantidad = order_detail_serializer.data['cantidad']
+            price = cantidad * item_order.standar_cost
+
+            order_detail = OrderDetail.objects.create(
+                cantidad=cantidad,
+                udvta=item_order.udVta,
+                item=item_order,
+                precio=price,
+                order=order
+            )
+
+            order_detail.save()
+
+            authorization = Authorization.objects.create(
+                order=order
+            )
+
+            authorization.save()
+
+            order_serializer = serializers.OrderSerializer(order)
+        except Exception:
+            if "order" in locals():
+                order.detele()
+
+            if "sales_order" in locals():
+                sales_order.detele()
+
+            if "order_detail" in locals():
+                order_detail.detele()
+
+            if "authorization" in locals():
+                authorization.detele()
+
+            return response.Response(
+                data={
+                    "error": "An error ocurre while creating order"
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return response.Response(
+            data=order_serializer.data,
+            status=status.HTTP_201_CREATED
+        )
+
+
+class OrderDetailViewset(RetrieveModelMixin,
+                         UpdateModelMixin,
+                         viewsets.GenericViewSet,
+                         BaseGenericViewSet):
+
+    serializer_class = serializers.OrderDetail
+    retrieve_serializer_class = serializers.OrderDetailSerializer
+    update_serializer_class = serializers.UpdateOrderDetailSerializer
+
+    queryset = OrderDetail.objects.all()
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in self.kwargs, (
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
+
+        filter_kwargs = {'order': self.kwargs[lookup_url_kwarg]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
+
+class AreaStatusViewset(mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet,
                         BaseGenericViewSet):
     serializer_class = serializers.AuthorizationSerializer
-    list_serializer_class = serializers.AuthorizationSerializer
 
     # Missing filter with Orders that has salesOrder or inProgress
     queryset = Authorization.objects.all()
 
-    # Missing check if user has rol of VTA or AGE
-    # Missing order filter (all, in progress, processed)
-    def list(self, request, *args, **kwargs):
-        return super(AreaStatusViewset, self).list(request, *args, **kwargs)
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in self.kwargs, (
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
+
+        filter_kwargs = {'order': self.kwargs[lookup_url_kwarg]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
 
 
 class DeliveredQuantityViewset(ListModelMixin,
@@ -124,7 +268,21 @@ class DeliverAddressViewset(ListModelMixin,
 
 
 router.register(
-    r'order/status',
+    r'orders',
+    OrderViewset,
+    basename='order'
+)
+
+
+router.register(
+    r'orders-detail',
+    OrderDetailViewset,
+    basename='orders-detail'
+)
+
+
+router.register(
+    r'order-status',
     AreaStatusViewset,
     'auth-order'
 )
@@ -133,6 +291,12 @@ router.register(
     r'delivered-quantities',
     DeliveredQuantityViewset,
     basename='delivered-quantity'
+)
+
+router.register(
+    r'invoices',
+    InvoiceViewset,
+    'invoice'
 )
 
 router.register(

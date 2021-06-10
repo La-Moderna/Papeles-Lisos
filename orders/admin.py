@@ -4,13 +4,30 @@ from orders.models import (
     Authorization,
     DeliverAddress,
     DeliveredQuantity,
-    Invoice
+    Invoice,
+    Order,
+    OrderDetail,
+    SalesOrder
 )
 
 
 class AuthorizationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'vta', 'cst', 'pln', 'ing',
+    list_display = ['id', 'order', 'vta', 'cst', 'pln', 'ing',
                     'cxc', 'suaje', 'grabado']
+
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'obsOrder', 'ordenCompra',
+                    'fechaOrden', 'fechaSolicitada']
+
+
+class SalesOrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'status', 'order']
+
+
+class OrderDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'order', 'cantidad', 'udvta',
+                    'precio', 'item']
 
 
 class DeliverAddressAdmin(admin.ModelAdmin):
@@ -51,3 +68,6 @@ admin.site.register(Authorization, AuthorizationAdmin)
 admin.site.register(DeliverAddress, DeliverAddressAdmin)
 admin.site.register(DeliveredQuantity, DeliveredQuantityAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(SalesOrder, SalesOrderAdmin)
+admin.site.register(OrderDetail, OrderDetailAdmin)

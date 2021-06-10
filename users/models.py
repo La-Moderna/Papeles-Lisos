@@ -41,6 +41,43 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+class Permission(TimeStampedMixin, ActiveMixin):
+    """Custom permission model"""
+
+    codename = models.CharField(max_length=30,
+                                verbose_name='codigo',
+                                unique=True)
+
+    description = models.CharField(max_length=100,
+                                   verbose_name='descripcion')
+
+    class Meta:
+        ordering = ['codename', 'description']
+
+    def __str__(self):
+        return '%s | %s' % (self.codename, self.description)
+
+
+class Role(TimeStampedMixin, ActiveMixin):
+    """Custom role model"""
+
+    name = models.CharField(max_length=10,
+                            unique=True,
+                            verbose_name='rol')
+
+    permissions = models.ManyToManyField(Permission)
+
+    class Meta:
+        """Define the behavior of Model."""
+
+        verbose_name = 'Role'
+        verbose_name_plural = 'roles'
+        ordering = ('name',)
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, ActiveMixin):
     """Custom user model to be used accross the app"""
 
@@ -61,6 +98,8 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, ActiveMixin):
     is_staff = models.BooleanField(
         default=False
     )
+
+    roles = models.ManyToManyField(Role)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
