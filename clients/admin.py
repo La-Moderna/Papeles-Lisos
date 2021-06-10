@@ -17,6 +17,7 @@ class BalanceAdmin(admin.ModelAdmin):
         'id',
         'order_balance',
         'facture_balance',
+        'client',
         'company',
         'is_active',
     ]
