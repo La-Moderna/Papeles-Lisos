@@ -1,9 +1,11 @@
-from clients.models import Agent, Balance
+from clients.models import Agent, Balance, Client
 from clients.serializers import AgentSerializer, BalanceSerializer
 
 from companies.models import Company
 
 from django.urls import reverse
+
+from inventories.models import Warehouse
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -15,7 +17,7 @@ class AgentAPITestCase(APITestCase):
     """Test/agents model."""
     def setUp(self):
         self.company = Company.objects.create(
-            id='619',
+            company_id='619',
             name="Ejemplo1"
         )
         self.user = User.objects.create(
@@ -49,7 +51,7 @@ class AgentAPITestCase(APITestCase):
         """Test /success create."""
         agent_data = {
             "representant": "Edmond",
-            "company": self.company.id
+            "company": "619"
         }
 
         response = self.client.post(reverse('agent-list'), agent_data)
@@ -71,7 +73,7 @@ class AgentAPITestCase(APITestCase):
         self.assertDictContainsSubset(
             {
                 'representant': self.agent.representant,
-                'company': self.company.id
+                'company': self.company.company_id
             }, response.data[0])
 
     def test_retrieve_agent(self):
@@ -85,7 +87,7 @@ class AgentAPITestCase(APITestCase):
         self.assertDictContainsSubset(
             {
                 'representant': self.agent.representant,
-                'company': self.company.id
+                'company': self.company.company_id
             }, response.data)
 
     def test_partial_update_agent_is_active(self):
@@ -225,7 +227,7 @@ class BalanceAPITestCase(APITestCase):
     """Test/balance model."""
     def setUp(self):
         self.company = Company.objects.create(
-            id='619',
+            company_id='123',
             name="Ejemplo1"
         )
         self.user = User.objects.create(
@@ -236,9 +238,34 @@ class BalanceAPITestCase(APITestCase):
         self.user.set_password(self.password)
         self.user.save()
 
+        self.agent = Agent.objects.create(
+            representant="edmond",
+            company=self.company
+        )
+
+        self.warehouse = Warehouse.objects.create(
+                name="21b",
+                description="This is a test",
+                company=self.company
+        )
+
+        self.cliente = Client.objects.create(
+                client_id="1212",
+                company=self.company,
+                nameA="Manuel",
+                nameB="Urgell",
+                status=1,
+                agent=self.agent,
+                analist="Analises",
+                currency="MXN",
+                credit_lim=2000,
+                warehouse=self.warehouse
+        )
+
         self.balance = Balance.objects.create(
             order_balance="200",
             facture_balance="300",
+            client=self.cliente,
             company=self.company
         )
 
@@ -261,16 +288,17 @@ class BalanceAPITestCase(APITestCase):
         balance_data = {
             "order_balance": "1200",
             "facture_balance": "1300",
-            "company": self.company.id
+            "client": "1212",
+            "company": "123"
         }
 
         response = self.client.post(reverse('balance-list'), balance_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        agent = Balance.objects.get(order_balance=balance_data
-                                    ['order_balance'])
-        self.assertEqual(agent.order_balance, balance_data['order_balance'])
+        balance = Balance.objects.get(order_balance=balance_data
+                                      ['order_balance'])
+        self.assertEqual(balance.order_balance, balance_data['order_balance'])
 
     def test_list_balance(self):
         '''Test valid list of balance'''
@@ -285,7 +313,7 @@ class BalanceAPITestCase(APITestCase):
             {
                 'order_balance': self.balance.order_balance,
                 'facture_balance': self.balance.facture_balance,
-                'company': self.company.id
+                'company': self.company.company_id
             }, response.data[0])
 
     def test_retrieve_balance(self):
@@ -300,7 +328,7 @@ class BalanceAPITestCase(APITestCase):
             {
                 'order_balance': self.balance.order_balance,
                 'facture_balance': self.balance.facture_balance,
-                'company': self.company.id
+                'company': self.company.company_id
             }, response.data)
 
     def test_partial_update_balance_is_active(self):

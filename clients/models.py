@@ -12,13 +12,6 @@ class Agent(ActiveMixin):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
 
-class Balance(ActiveMixin):
-    # client = models.ForeignKey
-    order_balance = models.CharField(max_length=45)
-    facture_balance = models.CharField(max_length=45)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-
-
 class PriceList(ActiveMixin):
     DISCOUNT_LEVEL_CHOICES = [
         (1, 1),
@@ -91,6 +84,13 @@ class Client(ActiveMixin):
 
     def __str__(self):
         return self.client_id
+
+
+class Balance(ActiveMixin):
+    order_balance = models.CharField(max_length=45)
+    facture_balance = models.CharField(max_length=45)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:
         """Define the behavior of the model."""

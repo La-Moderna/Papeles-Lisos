@@ -10,68 +10,6 @@ from inventories.models import Item
 from rest_framework import serializers
 
 
-class AgentSerializer(serializers.ModelSerializer):
-    """Serializer for Agent Model."""
-
-    class Meta:
-        model = Agent
-        fields = ('__all__')
-
-
-class CreateAgentSerializer(serializers.ModelSerializer):
-    """Serializer for Agent Model."""
-
-    class Meta:
-        model = Agent
-        fields = [
-            'representant',
-            'company'
-        ]
-
-
-class RetrieveAgentSerializer(serializers.ModelSerializer):
-    """Serializer for Agent Model."""
-
-    class Meta:
-        model = Agent
-        fields = [
-            'representant',
-            'company'
-        ]
-
-
-class BalanceSerializer(serializers.ModelSerializer):
-    """Serializer for Balance Model."""
-
-    class Meta:
-        model = Balance
-        fields = ('__all__')
-
-
-class CreateBalanceSerializer(serializers.ModelSerializer):
-    """Serializer for Balance Model."""
-
-    class Meta:
-        model = Balance
-        fields = [
-            'order_balance',
-            'facture_balance',
-            'company'
-        ]
-
-
-class RetrieveBalanceSerializer(serializers.ModelSerializer):
-    """Serializer for Balance Model."""
-
-    class Meta:
-        model = Balance
-        fields = [
-            'order_balance',
-            'facture_balance',
-            'company'
-        ]
-
-
 class SlugRelatedField(serializers.SlugRelatedField):
 
     def to_internal_value(self, data):
@@ -85,6 +23,110 @@ class SlugRelatedField(serializers.SlugRelatedField):
             )
         except (TypeError, ValueError):
             self.fail('invalid')
+
+
+class AgentSerializer(serializers.ModelSerializer):
+    """Serializer for Agent Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Agent
+        fields = ('__all__')
+
+
+class CreateAgentSerializer(serializers.ModelSerializer):
+    """Serializer for Agent Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Agent
+        fields = [
+            'representant',
+            'company'
+        ]
+
+
+class RetrieveAgentSerializer(serializers.ModelSerializer):
+    """Serializer for Agent Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Agent
+        fields = [
+            'representant',
+            'company'
+        ]
+
+
+class BalanceSerializer(serializers.ModelSerializer):
+    """Serializer for Balance Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    client = SlugRelatedField(
+        slug_field='client_id',
+        queryset=Client.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Balance
+        fields = ('__all__')
+
+
+class CreateBalanceSerializer(serializers.ModelSerializer):
+    """Serializer for Balance Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    client = SlugRelatedField(
+        slug_field='client_id',
+        queryset=Client.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Balance
+        fields = [
+            'order_balance',
+            'facture_balance',
+            'client',
+            'company'
+        ]
+
+
+class RetrieveBalanceSerializer(serializers.ModelSerializer):
+    """Serializer for Balance Model."""
+
+    company = SlugRelatedField(
+        slug_field='company_id',
+        queryset=Company.objects.filter(is_active=True)
+    )
+
+    class Meta:
+        model = Balance
+        fields = [
+            'order_balance',
+            'facture_balance',
+            'client',
+            'company'
+        ]
 
 
 class ClientSerializer(serializers.ModelSerializer):
