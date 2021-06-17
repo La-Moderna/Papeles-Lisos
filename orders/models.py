@@ -8,6 +8,8 @@ from inventories.models import Item
 
 from utils.models import ActiveMixin
 
+from bulk_update_or_create import BulkUpdateOrCreateQuerySet
+
 
 class Order(ActiveMixin):
     obsOrder = models.CharField(max_length=100)
@@ -80,6 +82,8 @@ class Authorization (ActiveMixin):
 
 
 class DeliveredQuantity(ActiveMixin):
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     REG_TYPE_CHOICES = [
         (1, "Capturado"),
         (2, "Cancelado"),
@@ -88,9 +92,9 @@ class DeliveredQuantity(ActiveMixin):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name='delivered_quantities'
+        related_name='delivered_quantities'
     )
-    order = models.BigIntegerField(unique=True)
+    order = models.BigIntegerField(null=True, blank=True)
     position = models.IntegerField()
     mov_date = models.DateField()
     time = models.BigIntegerField()
@@ -100,7 +104,7 @@ class DeliveredQuantity(ActiveMixin):
     item = models.ForeignKey(
         Item,
         on_delete=models.DO_NOTHING,
-        verbose_name='delivered_quantities'
+        related_name='delivered_quantities'
     )
 
     class Meta:
@@ -111,15 +115,19 @@ class DeliveredQuantity(ActiveMixin):
 
 
 class Invoice(ActiveMixin):
+
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
         verbose_name='invoices'
     )
     # Missing FK "Order" model
-    invoice_number = models.BigIntegerField(unique=True)
+    order = models.BigIntegerField(default=0)
+    invoice_number = models.BigIntegerField()
     position = models.IntegerField()
-    delivery = models.IntegerField()
+    delivery = models.IntegerField(null=True, blank=True)
     trans_type = models.CharField(max_length=4)
     item = models.ForeignKey(
         Item,
@@ -144,6 +152,9 @@ class Invoice(ActiveMixin):
 
 
 class DeliverAddress(ActiveMixin):
+
+    objects = BulkUpdateOrCreateQuerySet.as_manager()
+
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -160,6 +171,7 @@ class DeliverAddress(ActiveMixin):
     nameC = models.CharField(max_length=50, null=True, blank=True)
     nameD = models.CharField(max_length=50, null=True, blank=True)
     nameE = models.CharField(max_length=50, null=True, blank=True)
+    nameF = models.CharField(max_length=50, null=True, blank=True)
     postal_code = models.CharField(max_length=5, null=True, blank=True)
     route_code = models.CharField(max_length=5, null=True, blank=True)
     country = models.CharField(max_length=3, null=True, blank=True)

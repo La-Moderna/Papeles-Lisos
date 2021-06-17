@@ -14,6 +14,7 @@ from orders.models import (
 )
 
 from rest_framework import mixins, response, status, viewsets
+from rest_framework.response import Response
 
 from utils.mixins import (
     BaseGenericViewSet,
@@ -215,6 +216,42 @@ class DeliveredQuantityViewset(ListModelMixin,
         return obj
 
 
+class LoadDeliveredQuantityViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadDeliveredQuantitySerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class LoadInvoiceViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadInvoiceSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
 class InvoiceViewset(ListModelMixin,
                      CreateModelMixin,
                      RetrieveModelMixin,
@@ -249,6 +286,24 @@ class InvoiceViewset(ListModelMixin,
         return obj
 
 
+class LoadDeliverAddressViewSet(mixins.CreateModelMixin,
+                           viewsets.GenericViewSet,
+                           BaseGenericViewSet):
+    """ViewSet to upload data from csv."""
+
+    create_serializer_class = serializers.LoadDeliverAddressSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, action='create')
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(
+            data={"status": "created"},
+            status=status.HTTP_201_CREATED
+        )
+
+
 class DeliverAddressViewset(ListModelMixin,
                             CreateModelMixin,
                             RetrieveModelMixin,
@@ -268,11 +323,29 @@ class DeliverAddressViewset(ListModelMixin,
 
 
 router.register(
+    r'invoices/load',
+    LoadInvoiceViewSet,
+    'invoice-load'
+)
+
+
+router.register(
+    r'deliver-address-load',
+    LoadDeliverAddressViewSet,
+    basename='load-deliver-address'
+)
+
+router.register(
+    r'delivered-quantities-load',
+    LoadDeliveredQuantityViewSet,
+    basename='load-delivered-quantity'
+)
+
+router.register(
     r'orders',
     OrderViewset,
     basename='order'
 )
-
 
 router.register(
     r'orders-detail',

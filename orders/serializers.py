@@ -1,3 +1,4 @@
+from orders.utils import load_delivered_quantity, load_deliver_address, load_invoices
 from clients.models import Client
 
 from companies.models import Company
@@ -177,6 +178,27 @@ class CustomDeliveredQuantitySerializer(serializers.ModelSerializer):
         ]
 
 
+class LoadDeliveredQuantitySerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = DeliveredQuantity
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_delivered_quantity(file, delimiter)
+
+        return validated_data
+
+
 class InvoiceSerializer(serializers.ModelSerializer):
     """Serializer for Invoice Model"""
 
@@ -218,6 +240,27 @@ class CustomInvoiceSerializer(serializers.ModelSerializer):
         ]
 
 
+class LoadInvoiceSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = Invoice
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_invoices(file, delimiter)
+
+        return validated_data
+
+
 class DeliverAddressSerializer(serializers.ModelSerializer):
     """Serializer for DeliverAddress Model"""
 
@@ -252,6 +295,7 @@ class CustomDeliverAddressSerializer(serializers.ModelSerializer):
             'nameC',
             'nameD',
             'nameE',
+            'nameF',
             'postal_code',
             'route_code',
             'country',
@@ -284,8 +328,30 @@ class RetrieveDeliverAddressSerializer(serializers.ModelSerializer):
             'nameC',
             'nameD',
             'nameE',
+            'nameF',
             'postal_code',
             'route_code',
             'country',
             'rfc',
         ]
+
+
+class LoadDeliverAddressSerializer(serializers.ModelSerializer):
+
+    file = serializers.FileField()
+    delimiter = serializers.CharField()
+
+    class Meta:
+        model = DeliverAddress
+        fields = (
+            'file',
+            'delimiter'
+        )
+
+    def create(self, validated_data):
+        file = validated_data.get('file')
+        delimiter = validated_data.get('delimiter')
+
+        load_deliver_address(file, delimiter)
+
+        return validated_data
